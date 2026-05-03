@@ -41,6 +41,18 @@ dependencies {
     shade("org.xerial:sqlite-jdbc:3.46.1.3")
     shade("com.electronwill.night-config:toml:3.8.1")
     shade("org.slf4j:slf4j-api:2.0.16")
+
+    testImplementation(platform("org.junit:junit-bom:5.11.3"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.mockito:mockito-core:5.14.2")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.14.2")
+    testImplementation("org.assertj:assertj-core:3.26.3")
+    testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:3.0.1")
+}
+
+tasks.test {
+    useJUnitPlatform()
+    testLogging { events("passed", "skipped", "failed") }
 }
 
 tasks.processResources {
@@ -71,4 +83,17 @@ tasks.remapJar {
 tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
     options.release.set(javaVersion.toInt())
+}
+
+tasks.register<Copy>("installMod") {
+    dependsOn(tasks.remapJar)
+    from(tasks.remapJar.flatMap { it.archiveFile })
+    into("/mnt/c/dev/mc-server/mods")
+    doLast {
+        logger.lifecycle("Installed dmcl jar to /mnt/c/dev/mc-server/mods/")
+    }
+}
+
+tasks.build {
+    finalizedBy(tasks.named("installMod"))
 }
