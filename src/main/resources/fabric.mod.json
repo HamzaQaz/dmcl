@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${version}",
+  "name": "DMCL",
+  "description": "Minecraft to Discord chat bridge with full feature parity.",
+  "authors": ["n1ght"],
+  "license": "MIT",
+  "environment": "server",
+  "entrypoints": {
+    "server": ["com.westwardmc.dmcl.DmclMod"]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "fabric-api": "*",
+    "minecraft": "1.21.x",
+    "java": ">=21"
+  }
+}
