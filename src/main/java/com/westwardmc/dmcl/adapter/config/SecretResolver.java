@@ -1,6 +1,7 @@
 package com.westwardmc.dmcl.adapter.config;
 
 import com.electronwill.nightconfig.core.file.FileConfig;
+import com.electronwill.nightconfig.toml.TomlFormat;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -54,7 +55,7 @@ public final class SecretResolver {
     public String resolveSecret(String dottedPath) {
         if (secretsToml == null || !Files.exists(secretsToml))
             throw new IllegalStateException("No secrets.toml configured for " + dottedPath);
-        try (var cfg = FileConfig.of(secretsToml)) {
+        try (var cfg = FileConfig.of(secretsToml, TomlFormat.instance())) {
             cfg.load();
             Object o = cfg.get(dottedPath);
             if (o == null) throw new IllegalStateException("Missing secret: " + dottedPath);

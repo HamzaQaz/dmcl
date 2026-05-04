@@ -2,6 +2,7 @@ package com.westwardmc.dmcl.adapter.config;
 
 import com.electronwill.nightconfig.core.Config;
 import com.electronwill.nightconfig.core.file.FileConfig;
+import com.electronwill.nightconfig.toml.TomlFormat;
 import com.westwardmc.dmcl.core.domain.Scope;
 import com.westwardmc.dmcl.core.port.ChannelBinding;
 
@@ -16,7 +17,7 @@ public final class TomlConfigLoader {
     public TomlConfigLoader(SecretResolver secrets) { this.secrets = secrets; }
 
     public DmclConfig load(Path tomlPath) {
-        try (var cfg = FileConfig.of(tomlPath)) {
+        try (var cfg = FileConfig.of(tomlPath, TomlFormat.instance())) {
             cfg.load();
             String token = secrets.resolve((String) cfg.get("discord.token"));
             long guild = ((Number) cfg.get("discord.guild_id")).longValue();
