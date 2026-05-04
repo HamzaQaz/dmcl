@@ -125,6 +125,29 @@ src/main/java/com/westwardmc/dmcl/
 
 Full design notes are in `docs/superpowers/specs/`.
 
+## Modrinth
+
+Releases are published to [Modrinth](https://modrinth.com/mod/dmcl).
+
+To publish a new version yourself:
+
+```bash
+MODRINTH_TOKEN=mr_xxx MODRINTH_PROJECT_ID=dmcl ./gradlew modrinth
+```
+
+The Minotaur plugin reads `modVersion` from `gradle.properties`, uploads the remapped jar, and syncs the README into the Modrinth project body.
+
+## Compatibility
+
+| Minecraft     | Loader  | Status   |
+| ------------- | ------- | -------- |
+| 1.21.1        | Fabric  | tested   |
+| 1.21.2, 1.21.3| Fabric  | should work (same Text API) |
+| 1.21.4+       | Fabric  | not supported (Text API changed to sealed records, needs port) |
+| 1.20.x        | Fabric  | not supported (different fabric-api event names) |
+
+The `fabric.mod.json` declares `"minecraft": ">=1.21.1 <1.21.4"`, so installs on incompatible versions are rejected by Fabric Loader at boot rather than crashing later.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).

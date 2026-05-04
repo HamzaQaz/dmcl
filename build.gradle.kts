@@ -2,6 +2,7 @@ plugins {
     id("fabric-loom") version "1.7-SNAPSHOT"
     id("java")
     id("com.gradleup.shadow") version "8.3.5"
+    id("com.modrinth.minotaur") version "2.8.7"
 }
 
 val modId: String by project
@@ -88,12 +89,33 @@ tasks.withType<JavaCompile>().configureEach {
 tasks.register<Copy>("installMod") {
     dependsOn(tasks.remapJar)
     from(tasks.remapJar.flatMap { it.archiveFile })
-    into("/mnt/c/dev/mc-server/mods")
+    val target = file("/mnt/c/dev/mc-server/mods")
+    onlyIf { target.isDirectory }
+    into(target)
     doLast {
-        logger.lifecycle("Installed dmcl jar to /mnt/c/dev/mc-server/mods/")
+        logger.lifecycle("Installed dmcl jar to ${'$'}target")
     }
 }
 
 tasks.build {
     finalizedBy(tasks.named("installMod"))
+}
+
+// ---- Modrinth publishing ----
+// Run with: MODRINTH_TOKEN=... ./gradlew modrinth
+modrinth {
+    token.set(System.getenv("MODRINTH_TOKEN") ?: "")
+    projectId.set(System.getenv("MODRINTH_PROJECT_ID") ?: "dmcl")
+    versionNumber.set(modVersion)
+    versionType.set("release")
+    uploadFile.set(tasks.remapJar)
+    gameVersions.addAll(listOf("1.21.1", "1.21.2", "1.21.3"))
+    loaders.add("fabric")
+    dependencies {
+        required.project("fabric-api")
+    }
+    syncBodyFrom.set(rootProject.file("README.md").readText())
+    changelog.set(
+        "First public build of DMCL. See README for setup. Compatible with Minecraft 1.21.1 through 1.21.3."
+    )
 }
