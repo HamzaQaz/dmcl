@@ -10,6 +10,7 @@
   "entrypoints": {
     "server": ["com.westwardmc.dmcl.DmclMod"]
   },
+  "mixins": ["dmcl.mixins.json"],
   "depends": {
     "fabricloader": ">=0.16.0",
     "fabric-api": "*",
