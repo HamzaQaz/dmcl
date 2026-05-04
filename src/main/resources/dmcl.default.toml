@@ -1,0 +1,51 @@
+[discord]
+token            = "env:DMCL_DISCORD_TOKEN"
+guild_id         = 123456789012345678
+status           = "watching {online} players"
+
+[storage]
+db_path          = "world"   # "world" | "global"
+
+[avatars]
+provider         = "mc-heads"   # "mc-heads" | "crafatar" | "none"
+size             = 64
+
+[behavior]
+show_edits        = true
+show_deletes      = true
+show_reactions    = false
+mc_mention_color  = "aqua"
+ping_sound        = "minecraft:block.note_block.bell"
+loop_guard_strict = true
+
+[[channels]]
+scope          = "GLOBAL"
+channel_id     = 100000000000000001
+mc_format      = "<{name}> {message}"
+discord_format = "{message}"
+
+[[channels]]
+scope          = "STAFF"
+channel_id     = 100000000000000002
+mc_permission  = "minecraft.command.op"
+mc_command     = "sc"
+
+[[channels]]
+scope          = "DEATHS"
+channel_id     = 100000000000000003
+mc_send        = false
+
+[[channels]]
+scope          = "ADVANCEMENTS"
+channel_id     = 100000000000000003
+mc_send        = false
+
+[[channels]]
+scope          = "LIFECYCLE"
+channel_id     = 100000000000000004
+mc_send        = false
+
+[mentions]
+allow_everyone = false
+allow_here     = false
+allow_role     = ["MOD", "ADMIN"]
