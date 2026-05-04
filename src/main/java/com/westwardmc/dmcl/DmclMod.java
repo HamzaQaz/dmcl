@@ -47,6 +47,8 @@ public final class DmclMod implements DedicatedServerModInitializer {
     private JDA jda;
     private BridgeOrchestrator orch;
 
+    private static final String TOKEN_PLACEHOLDER = "PASTE_YOUR_DISCORD_BOT_TOKEN_HERE";
+
     @Override
     public void onInitializeServer() {
         try {
@@ -56,19 +58,31 @@ public final class DmclMod implements DedicatedServerModInitializer {
 
             var resolver = new SecretResolver(System.getenv(),
                 configDir.resolve("dmcl.env"), configDir.resolve("dmcl.secrets.toml"));
-            cfg = new TomlConfigLoader(resolver).load(tomlPath);
+            try {
+                cfg = new TomlConfigLoader(resolver).load(tomlPath);
+            } catch (RuntimeException e) {
+                LOG.error("DMCL disabled: config could not load. Edit {} and restart. Cause: {}",
+                    tomlPath, e.getMessage());
+                return;
+            }
+
+            if (TOKEN_PLACEHOLDER.equals(cfg.discordToken()) || cfg.discordToken().isBlank()) {
+                LOG.error("DMCL disabled: no Discord bot token set. Edit {} and either paste your token inline "
+                    + "(token = \"MTxxxx...\") or use env:DMCL_DISCORD_TOKEN with the env var set.", tomlPath);
+                return;
+            }
 
             List<String> errs = ConfigValidator.validate(cfg);
             if (!errs.isEmpty()) {
-                errs.forEach(e -> LOG.error("config error: {}", e));
-                throw new IllegalStateException("DMCL config invalid; aborting load");
+                errs.forEach(e -> LOG.error("DMCL config error: {}", e));
+                LOG.error("DMCL disabled until config errors above are fixed.");
+                return;
             }
 
             ServerLifecycleEvents.SERVER_STARTING.register(this::start);
             ServerLifecycleEvents.SERVER_STOPPING.register(this::stop);
         } catch (Exception e) {
-            LOG.error("DMCL init failed", e);
-            throw new RuntimeException(e);
+            LOG.error("DMCL disabled: unexpected init error. Server will continue without the bridge.", e);
         }
     }
 

@@ -1,5 +1,10 @@
 [discord]
-token            = "env:DMCL_DISCORD_TOKEN"
+# Discord bot token from https://discord.com/developers/applications
+# Paste your token inline (preferred for single servers):
+#   token = "MTxxxxxxxxxxxxxxxxxx.GXXXXX.YYYYYYYYYYYYYYYYYYYYYYYYYYYY"
+# Or read from an environment variable / dmcl.env / dmcl.secrets.toml:
+#   token = "env:DMCL_DISCORD_TOKEN"
+token            = "PASTE_YOUR_DISCORD_BOT_TOKEN_HERE"
 guild_id         = 123456789012345678
 status           = "watching {online} players"
 
