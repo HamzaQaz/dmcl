@@ -12,5 +12,5 @@ final class McCompat {
     static ClickEvent openUrl(String url) { return new ClickEvent(ClickEvent.Action.OPEN_URL, url); }
     static ClickEvent copy(String value) { return new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, value); }
     static HoverEvent showText(Component c) { return new HoverEvent(HoverEvent.Action.SHOW_TEXT, c); }
-    static boolean hasPermission(CommandSourceStack s, int level) { return s.hasPermission(level); }
+    static boolean isGamemaster(CommandSourceStack s) { return s.hasPermission(2); }
 }

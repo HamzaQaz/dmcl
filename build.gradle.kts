@@ -13,7 +13,7 @@ val fabricVersion: String by project
 val javaVersion: String by project
 val compat: String by project
 
-base.archivesName.set(modId)
+base.archivesName.set("$modId-fabric-$minecraftVersion")
 group = project.property("group").toString()
 version = modVersion
 
@@ -62,8 +62,9 @@ tasks.test {
 tasks.processResources {
     inputs.property("version", project.version)
     inputs.property("mod_id", modId)
+    inputs.property("mc_version", minecraftVersion)
     filesMatching("fabric.mod.json") {
-        expand(mapOf("version" to project.version, "mod_id" to modId))
+        expand(mapOf("version" to project.version, "mod_id" to modId, "mc_version" to minecraftVersion))
     }
 }
 
@@ -109,7 +110,7 @@ tasks.build {
 // Run with: MODRINTH_TOKEN=... ./gradlew modrinth
 modrinth {
     token.set(System.getenv("MODRINTH_TOKEN") ?: "")
-    projectId.set(System.getenv("MODRINTH_PROJECT_ID") ?: "dmcl")
+    projectId.set(System.getenv("MODRINTH_PROJECT_ID") ?: "v2ecfuiA")
     versionNumber.set(modVersion)
     versionType.set("release")
     uploadFile.set(tasks.remapJar)

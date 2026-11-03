@@ -29,7 +29,7 @@ public final class McLinkCommand {
                 return Command.SINGLE_SUCCESS;
             }));
             dispatcher.register(Commands.literal("dmcl")
-                .then(Commands.literal("status").requires(s -> McCompat.hasPermission(s, 2))
+                .then(Commands.literal("status").requires(s -> McCompat.isGamemaster(s))
                     .executes(ctx -> {
                         ctx.getSource().sendSuccess(() ->
                             Component.literal("DMCL: see logs for details"), false);
