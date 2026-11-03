@@ -1,17 +1,17 @@
 plugins {
-    id("fabric-loom") version "1.7-SNAPSHOT"
+    id("fabric-loom") version "1.14.10"
     id("java")
-    id("com.gradleup.shadow") version "8.3.5"
+    id("com.gradleup.shadow") version "9.2.1"
     id("com.modrinth.minotaur") version "2.8.7"
 }
 
 val modId: String by project
 val modVersion: String by project
 val minecraftVersion: String by project
-val yarnMappings: String by project
 val loaderVersion: String by project
 val fabricVersion: String by project
 val javaVersion: String by project
+val compat: String by project
 
 base.archivesName.set(modId)
 group = project.property("group").toString()
@@ -32,7 +32,7 @@ configurations.implementation.get().extendsFrom(shade)
 
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
-    mappings("net.fabricmc:yarn:$yarnMappings:v2")
+    mappings(loom.officialMojangMappings())
     modImplementation("net.fabricmc:fabric-loader:$loaderVersion")
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
 
@@ -45,11 +45,14 @@ dependencies {
 
     testImplementation(platform("org.junit:junit-bom:5.11.3"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.mockito:mockito-core:5.14.2")
     testImplementation("org.mockito:mockito-junit-jupiter:5.14.2")
     testImplementation("org.assertj:assertj-core:3.26.3")
     testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:3.0.1")
 }
+
+sourceSets.main { java.srcDir("src/compat-$compat/java") }
 
 tasks.test {
     useJUnitPlatform()

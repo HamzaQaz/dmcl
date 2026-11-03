@@ -17,15 +17,15 @@ public final class ChatEventHook {
     public static void register(FabricMinecraftAdapter adapter, AvatarService avatars) {
         ServerMessageEvents.CHAT_MESSAGE.register((message, sender, params) -> {
             var author = new Author(
-                Optional.of(sender.getUuid()),
+                Optional.of(sender.getUUID()),
                 Optional.empty(),
                 sender.getName().getString(),
-                avatars.headUrlFor(sender.getUuid()));
+                avatars.headUrlFor(sender.getUUID()));
             var bm = new BridgeMessage(
                 "mc:" + System.nanoTime(),
                 Source.MINECRAFT,
                 author,
-                message.getContent().getString(),
+                message.decoratedContent().getString(),
                 List.of(),
                 Optional.empty(),
                 Scope.GLOBAL,

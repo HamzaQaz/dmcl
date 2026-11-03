@@ -9,7 +9,7 @@ import com.westwardmc.dmcl.core.port.MinecraftPort;
 import com.westwardmc.dmcl.core.port.OnlinePlayer;
 import com.westwardmc.dmcl.core.port.PlayerEvent;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -35,24 +35,24 @@ public final class FabricMinecraftAdapter implements MinecraftPort {
 
     @Override
     public void broadcast(Scope scope, RenderedMcText text) {
-        var t = McTextConverter.toText(text);
-        server.execute(() -> server.getPlayerManager().broadcast(t, false));
+        var t = McTextConverter.toComponent(text);
+        server.execute(() -> server.getPlayerList().broadcastSystemMessage(t, false));
     }
 
     @Override
     public void sendTo(UUID player, RenderedMcText text) {
-        var t = McTextConverter.toText(text);
+        var t = McTextConverter.toComponent(text);
         server.execute(() -> {
-            ServerPlayerEntity p = server.getPlayerManager().getPlayer(player);
-            if (p != null) p.sendMessage(t, false);
+            ServerPlayer p = server.getPlayerList().getPlayer(player);
+            if (p != null) p.sendSystemMessage(t);
         });
     }
 
     @Override
     public Set<OnlinePlayer> getOnlinePlayers() {
         var out = new HashSet<OnlinePlayer>();
-        for (var p : server.getPlayerManager().getPlayerList()) {
-            out.add(new OnlinePlayer(p.getUuid(), p.getName().getString()));
+        for (var p : server.getPlayerList().getPlayers()) {
+            out.add(new OnlinePlayer(p.getUUID(), p.getName().getString()));
         }
         return out;
     }

@@ -26,7 +26,7 @@ import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.WorldSavePath;
+import net.minecraft.world.level.storage.LevelResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,7 +90,7 @@ public final class DmclMod implements DedicatedServerModInitializer {
         try {
             Path dbDir = "global".equals(cfg.storage().dbPath())
                 ? FabricLoader.getInstance().getGameDir().resolve("dmcl")
-                : server.getSavePath(WorldSavePath.ROOT).resolve("dmcl");
+                : server.getWorldPath(LevelResource.ROOT).resolve("dmcl");
             Files.createDirectories(dbDir);
             links = new SqliteLinkRepo("jdbc:sqlite:" + dbDir.resolve("links.db"));
             links.migrate();
