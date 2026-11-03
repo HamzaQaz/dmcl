@@ -2,6 +2,7 @@
 # Build one release target and print its jar path as the last line (JAR=<path>).
 #   scripts/build-target.sh fabric   <mc>   e.g. 1.21.1, 1.21.11, 26.3
 #   scripts/build-target.sh neoforge <mc>
+#   scripts/build-target.sh forge    <mc>   e.g. 1.21.1, 1.21.8, 26.3
 #   scripts/build-target.sh paper    -
 # JDKs: set JAVA_HOME_21_X64 / JAVA_HOME_25_X64 (setup-java does this in CI); falls back to JAVA_HOME.
 set -euo pipefail
@@ -45,6 +46,18 @@ case $platform in
     [ -n "$neo" ] || { echo "no stable NeoForge for $mc" >&2; exit 1; }
     ./gradlew -p neoforge build -PminecraftVersion="$mc" -PneoVersion="$neo" -Pcompat=$compat -PjavaVersion=$java --console=plain
     echo "JAR=neoforge/build/libs/dmcl-neoforge-$mc-$ver.jar"
+    ;;
+  forge)
+    fv=$(latest https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml "^${mc//./\.}-" | sed "s/^$mc-//")
+    [ -n "$fv" ] || { echo "no stable Forge for $mc" >&2; exit 1; }
+    if [ "$mc" = 1.21.1 ]; then
+      ./gradlew -p forge build -PminecraftVersion="$mc" -PforgeVersion="$fv" -Pcompat=$compat --console=plain
+      echo "JAR=forge/build/libs/dmcl-forge-$mc-$ver.jar"
+    else
+      eb=(); case $mc in 1.21.3|1.21.4|1.21.5) ;; *) eb=(-Peb7=1) ;; esac # Forge 1.21.6+ uses EventBus 7
+      ./gradlew -p forge-modern build -PminecraftVersion="$mc" -PforgeVersion="$fv" -Pcompat=$compat -Pjdk=$java "${eb[@]}" --console=plain
+      echo "JAR=forge-modern/build/libs/dmcl-forge-$mc-$ver.jar"
+    fi
     ;;
   paper)
     ./gradlew -p paper build --console=plain

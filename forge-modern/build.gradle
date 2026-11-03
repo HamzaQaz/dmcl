@@ -48,7 +48,12 @@ sourceSets {
         java {
             srcDir '../src/main/java'
             srcDir "../src/compat-${compat}/java"
-            srcDir "../forge/src/main/java"
+            if (findProperty('eb7')) {
+                srcDir 'src/eb7/java'
+                exclude '**/forge/src/main/java/**/DmclForge.java'
+            } else {
+                srcDir "../forge/src/main/java"
+            }
             exclude '**/adapter/fabric/**', '**/mixin/**', '**/DmclMod.java'
         }
         resources {

@@ -9,6 +9,8 @@ case $platform in
             req="Requires [Fabric API](https://modrinth.com/mod/fabric-api) and Fabric Loader 0.16 or newer." ;;
   neoforge) name="NeoForge"; mcline="Minecraft $mc"; java=21; [[ $mc == 26.* ]] && java=25
             req="Requires NeoForge for Minecraft $mc." ;;
+  forge)    name="Forge";    mcline="Minecraft $mc"; java=21; [[ $mc == 26.* ]] && java=25
+            req="Requires Forge for Minecraft $mc." ;;
   paper)    name="Paper";    mcline="Paper 1.21 and later"; java=21
             req="Works on Paper (and forks that keep the Paper API). Drop it in \`plugins/\`." ;;
 esac

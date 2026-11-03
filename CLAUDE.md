@@ -5,7 +5,7 @@ Server-side Fabric mod (Minecraft 1.21.1, Java 21) bridging Minecraft chat with 
 - Stack: Java, Gradle Kotlin DSL (fabric-loom, shadow, minotaur), JDA 5 shaded in, SQLite for account links, TOML config; JUnit 5 + Mockito + AssertJ + WireMock.
 - Build: `./gradlew build` (remapped jar in `build/libs`). Test: `./gradlew test`.
 - Optionally copy the jar to a server on build: `./gradlew build -PdmclInstallDir=/path/to/mods` (otherwise installMod is skipped).
-- Targets: `scripts/build-target.sh <fabric|neoforge|paper> <mc>` builds one (needs JDK 21 and 25; see script header). `src/compat-<era>/java` holds the few MC APIs that differ per version. NeoForge/Paper are standalone builds in `neoforge/` and `paper/` (`./gradlew -p <dir> build`).
+- Targets: `scripts/build-target.sh <fabric|neoforge|forge|paper> <mc>` builds one (needs JDK 21 and 25; see script header). `src/compat-<era>/java` holds the few MC APIs that differ per version. NeoForge/Paper are standalone builds in `neoforge/` and `paper/` (`./gradlew -p <dir> build`). Forge: `forge/` (ForgeGradle 6, 1.21.1) and `forge-modern/` (ForgeGradle 7, 1.21.3+; `-Peb7=1` swaps in the EventBus 7 entry point for 1.21.6+).
 - Layout: hexagonal. Core/ports/translate/orchestrator are pure JVM; only `adapter/{jda,fabric,sqlite,config}` and `mixin/` touch JDA/Fabric. Composition root is `DmclMod.java`. Specs in `docs/superpowers/specs/`.
 - Keep bridge logic out of adapters so it stays unit-testable.
 - Each jar's metadata accepts only its own MC version. Minecraft-facing code uses Mojang names and lives in `adapter/mc` (shared by Fabric and NeoForge).

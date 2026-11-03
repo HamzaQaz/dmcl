@@ -2,9 +2,10 @@
 
 ## 0.2.0
 
-- **Multi-platform.** DMCL now ships for Fabric, NeoForge and Paper from one codebase.
+- **Multi-platform.** DMCL now ships for Fabric, NeoForge, Forge and Paper from one codebase.
   - Fabric: Minecraft 1.21.1 to 1.21.11, plus 26.1, 26.1.1, 26.1.2, 26.2 and 26.3 (26.x needs Java 25).
   - NeoForge: Minecraft 1.21.1, 1.21.3 to 1.21.5, 1.21.8, 1.21.10, 1.21.11 and 26.1 to 26.3.
+  - Forge: Minecraft 1.21.1, 1.21.3 to 1.21.11 and 26.1 to 26.3.
   - Paper plugin: one jar for Paper 1.21 and later (Java 21).
 - **Fix:** `/link`, `/unlink` and `/dmcl status` were registered after the server built its command tree, so they did not exist until a `/reload`. They now register at startup.
 - New DMCL icon and branding.

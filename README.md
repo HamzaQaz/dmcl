@@ -2,7 +2,7 @@
 
 # DMCL
 
-A server-side mod (Fabric, NeoForge) and Paper plugin that bridges Minecraft chat with Discord at near-native fidelity.
+A server-side mod (Fabric, NeoForge, Forge) and Paper plugin that bridges Minecraft chat with Discord at near-native fidelity.
 
 Each player appears in Discord as their own user (via webhook with their skin head as avatar). Discord pings reach players in game with sound and highlight. Replies, edits, attachments, embeds, custom emoji, reactions, and threads all carry across cleanly. Server events (joins, leaves, deaths, advancements, lifecycle) post as colored embeds.
 
@@ -33,7 +33,7 @@ Each player appears in Discord as their own user (via webhook with their skin he
 
 ## Install
 
-1. Download the jar for your platform and Minecraft version from [Modrinth](https://modrinth.com/mod/dmcl) or the [Releases](https://github.com/HamzaQaz/dmcl/releases) page (`dmcl-fabric-<mc>`, `dmcl-neoforge-<mc>`, or `dmcl-paper`).
+1. Download the jar for your platform and Minecraft version from [Modrinth](https://modrinth.com/mod/dmcl) or the [Releases](https://github.com/HamzaQaz/dmcl/releases) page (`dmcl-fabric-<mc>`, `dmcl-neoforge-<mc>`, `dmcl-forge-<mc>`, or `dmcl-paper`).
 2. Drop it into `mods/` (Fabric also needs [Fabric API](https://modrinth.com/mod/fabric-api)) or `plugins/` (Paper).
 3. Start the server once. It writes `config/dmcl.toml` with example values.
 4. Stop the server, edit `config/dmcl.toml` (channel IDs, guild ID, mention rules), and provide your bot token via the `DMCL_DISCORD_TOKEN` environment variable.
@@ -131,7 +131,7 @@ Full design notes are in `docs/superpowers/specs/`.
 
 Releases are published to [Modrinth](https://modrinth.com/mod/dmcl), one version per platform and Minecraft version, each with its own release notes.
 
-To release: add a section to `CHANGELOG.md`, bump `modVersion` in `gradle.properties`, and push a `v<version>` tag. The `release` workflow builds every target and uploads it (needs the `MODRINTH_TOKEN` repository secret). The target list lives in `scripts/gen-release-workflow.py`; rerun it after editing the list. Build a single target locally with `scripts/build-target.sh <fabric|neoforge|paper> <mc>`.
+To release: add a section to `CHANGELOG.md`, bump `modVersion` in `gradle.properties`, and push a `v<version>` tag. The `release` workflow builds every target and uploads it (needs the `MODRINTH_TOKEN` repository secret). The target list lives in `scripts/gen-release-workflow.py`; rerun it after editing the list. Build a single target locally with `scripts/build-target.sh <fabric|neoforge|forge|paper> <mc>`.
 
 ## Compatibility
 
@@ -141,9 +141,11 @@ To release: add a section to `CHANGELOG.md`, bump `modVersion` in `gradle.proper
 | Fabric | 26.1, 26.1.1, 26.1.2, 26.2, 26.3 | 25 |
 | NeoForge | 1.21.1, 1.21.3, 1.21.4, 1.21.5, 1.21.8, 1.21.10, 1.21.11 | 21 |
 | NeoForge | 26.1.2, 26.2, 26.3 | 25 |
+| Forge | 1.21.1, 1.21.3 to 1.21.11 | 21 |
+| Forge | 26.1, 26.1.1, 26.1.2, 26.2, 26.3 | 25 |
 | Paper (plugin) | 1.21 and later, one jar | 21 |
 
-Each Minecraft version has its own jar, and its metadata only accepts that version, so a wrong download is rejected at boot instead of crashing later. Server-side only; players install nothing. Forge is not published yet. NeoForge has no stable build for 1.21.2, 1.21.6, 1.21.7 or 1.21.9, so those are Fabric-only.
+Each Minecraft version has its own jar, and its metadata only accepts that version, so a wrong download is rejected at boot instead of crashing later. Server-side only; players install nothing. Forge has no 1.21.2 build. NeoForge has no stable build for 1.21.2, 1.21.6, 1.21.7 or 1.21.9, so those are Fabric-only.
 
 ## License
 

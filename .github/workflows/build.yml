@@ -18,6 +18,8 @@ jobs:
       - run: scripts/build-target.sh fabric 1.21.1
       - run: scripts/build-target.sh paper -
       - run: scripts/build-target.sh neoforge 1.21.1
+      - run: scripts/build-target.sh forge 1.21.1
+      - run: scripts/build-target.sh forge 1.21.8
       - uses: actions/upload-artifact@v4
         with:
           name: jars
@@ -25,3 +27,5 @@ jobs:
             build/libs/dmcl-fabric-*[0-9].jar
             paper/build/libs/*.jar
             neoforge/build/libs/*.jar
+            forge/build/libs/*.jar
+            forge-modern/build/libs/*.jar
