@@ -1,3 +1,5 @@
+<p align="center"><img src="branding/banner.png" alt="DMCL: Minecraft to Discord" width="640"></p>
+
 # DMCL
 
 A server-side Fabric 1.21.1 mod that bridges Minecraft chat with Discord at near-native fidelity.

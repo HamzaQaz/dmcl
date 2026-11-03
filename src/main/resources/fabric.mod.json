@@ -6,6 +6,7 @@
   "description": "Minecraft to Discord chat bridge with full feature parity.",
   "authors": ["n1ght"],
   "license": "MIT",
+  "icon": "assets/dmcl/icon.png",
   "environment": "server",
   "entrypoints": {
     "server": ["com.westwardmc.dmcl.DmclMod"]

@@ -89,7 +89,7 @@ tasks.withType<JavaCompile>().configureEach {
 tasks.register<Copy>("installMod") {
     dependsOn(tasks.remapJar)
     from(tasks.remapJar.flatMap { it.archiveFile })
-    val target = file("/mnt/c/dev/mc-server/mods")
+    val target = file(providers.gradleProperty("dmclInstallDir").orElse("").get().ifEmpty { "/nonexistent" })
     onlyIf { target.isDirectory }
     into(target)
     doLast {
@@ -97,6 +97,7 @@ tasks.register<Copy>("installMod") {
     }
 }
 
+// Opt-in: ./gradlew build -PdmclInstallDir=/path/to/server/mods
 tasks.build {
     finalizedBy(tasks.named("installMod"))
 }
