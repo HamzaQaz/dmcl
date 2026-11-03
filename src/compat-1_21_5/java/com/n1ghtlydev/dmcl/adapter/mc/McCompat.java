@@ -1,4 +1,4 @@
-package com.n1ghtlydev.dmcl.adapter.fabric;
+package com.n1ghtlydev.dmcl.adapter.mc;
 
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.ClickEvent;

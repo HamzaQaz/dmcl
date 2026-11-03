@@ -1,4 +1,4 @@
-package com.n1ghtlydev.dmcl.adapter.fabric;
+package com.n1ghtlydev.dmcl.adapter.mc;
 
 import com.n1ghtlydev.dmcl.core.domain.RenderedMcText;
 import com.n1ghtlydev.dmcl.core.domain.RenderedMcText.Color;

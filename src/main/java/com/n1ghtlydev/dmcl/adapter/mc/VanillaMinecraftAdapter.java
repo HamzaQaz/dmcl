@@ -1,4 +1,4 @@
-package com.n1ghtlydev.dmcl.adapter.fabric;
+package com.n1ghtlydev.dmcl.adapter.mc;
 
 import com.n1ghtlydev.dmcl.core.domain.BridgeMessage;
 import com.n1ghtlydev.dmcl.core.domain.RenderedMcText;
@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public final class FabricMinecraftAdapter implements MinecraftPort {
+public final class VanillaMinecraftAdapter implements MinecraftPort {
     private final MinecraftServer server;
     private final AvatarService avatars;
 
@@ -24,7 +24,7 @@ public final class FabricMinecraftAdapter implements MinecraftPort {
     private Consumer<LifecycleEvent> lifecycleHandler = e -> {};
     private Consumer<PlayerEvent> playerHandler = e -> {};
 
-    public FabricMinecraftAdapter(MinecraftServer server, AvatarService avatars) {
+    public VanillaMinecraftAdapter(MinecraftServer server, AvatarService avatars) {
         this.server = server;
         this.avatars = avatars;
     }

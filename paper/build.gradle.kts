@@ -43,7 +43,7 @@ sourceSets {
     main {
         java {
             srcDir("../src/main/java")
-            exclude("**/adapter/fabric/**", "**/mixin/**", "**/DmclMod.java")
+            exclude("**/adapter/fabric/**", "**/adapter/mc/**", "**/mixin/**", "**/DmclMod.java")
         }
         resources {
             srcDir("../src/main/resources")

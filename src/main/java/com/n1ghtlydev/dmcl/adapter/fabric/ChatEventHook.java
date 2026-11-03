@@ -1,5 +1,6 @@
 package com.n1ghtlydev.dmcl.adapter.fabric;
 
+import com.n1ghtlydev.dmcl.adapter.mc.VanillaMinecraftAdapter;
 import com.n1ghtlydev.dmcl.core.domain.Author;
 import com.n1ghtlydev.dmcl.core.domain.BridgeMessage;
 import com.n1ghtlydev.dmcl.core.domain.Scope;
@@ -14,7 +15,7 @@ import java.util.Optional;
 public final class ChatEventHook {
     private ChatEventHook() {}
 
-    public static void register(FabricMinecraftAdapter adapter, AvatarService avatars) {
+    public static void register(VanillaMinecraftAdapter adapter, AvatarService avatars) {
         ServerMessageEvents.CHAT_MESSAGE.register((message, sender, params) -> {
             var author = new Author(
                 Optional.of(sender.getUUID()),
