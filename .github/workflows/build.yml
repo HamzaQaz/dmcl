@@ -11,10 +11,17 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 21
+          java-version: |
+            21
+            25
       - uses: gradle/actions/setup-gradle@v4
-      - run: ./gradlew build
+      - run: scripts/build-target.sh fabric 1.21.1
+      - run: scripts/build-target.sh paper -
+      - run: scripts/build-target.sh neoforge 1.21.1
       - uses: actions/upload-artifact@v4
         with:
           name: jars
-          path: build/libs/*.jar
+          path: |
+            build/libs/dmcl-fabric-*[0-9].jar
+            paper/build/libs/*.jar
+            neoforge/build/libs/*.jar
