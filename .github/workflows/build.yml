@@ -1,0 +1,31 @@
+name: build
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: |
+            21
+            25
+      - uses: gradle/actions/setup-gradle@v4
+      - run: scripts/build-target.sh fabric 1.21.1
+      - run: scripts/build-target.sh paper -
+      - run: scripts/build-target.sh neoforge 1.21.1
+      - run: scripts/build-target.sh forge 1.21.1
+      - run: scripts/build-target.sh forge 1.21.8
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jars
+          path: |
+            build/libs/dmcl-fabric-*[0-9].jar
+            paper/build/libs/*.jar
+            neoforge/build/libs/*.jar
+            forge/build/libs/*.jar
+            forge-modern/build/libs/*.jar

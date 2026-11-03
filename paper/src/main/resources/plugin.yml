@@ -1,0 +1,17 @@
+name: DMCL
+version: ${version}
+main: com.n1ghtlydev.dmcl.paper.DmclPlugin
+api-version: "1.21"
+author: n1ght
+description: Minecraft to Discord chat bridge with full feature parity.
+commands:
+  link:
+    description: Link your Minecraft account to Discord
+  unlink:
+    description: Unlink your Discord account
+  dmcl:
+    description: DMCL admin commands
+    permission: dmcl.admin
+permissions:
+  dmcl.admin:
+    default: op

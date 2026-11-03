@@ -1,19 +1,19 @@
 plugins {
-    id("fabric-loom") version "1.7-SNAPSHOT"
+    id("fabric-loom") version "1.14.10"
     id("java")
-    id("com.gradleup.shadow") version "8.3.5"
+    id("com.gradleup.shadow") version "9.2.1"
     id("com.modrinth.minotaur") version "2.8.7"
 }
 
 val modId: String by project
 val modVersion: String by project
 val minecraftVersion: String by project
-val yarnMappings: String by project
 val loaderVersion: String by project
 val fabricVersion: String by project
 val javaVersion: String by project
+val compat: String by project
 
-base.archivesName.set(modId)
+base.archivesName.set("$modId-fabric-$minecraftVersion")
 group = project.property("group").toString()
 version = modVersion
 
@@ -32,7 +32,7 @@ configurations.implementation.get().extendsFrom(shade)
 
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
-    mappings("net.fabricmc:yarn:$yarnMappings:v2")
+    mappings(loom.officialMojangMappings())
     modImplementation("net.fabricmc:fabric-loader:$loaderVersion")
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricVersion")
 
@@ -45,11 +45,14 @@ dependencies {
 
     testImplementation(platform("org.junit:junit-bom:5.11.3"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.mockito:mockito-core:5.14.2")
     testImplementation("org.mockito:mockito-junit-jupiter:5.14.2")
     testImplementation("org.assertj:assertj-core:3.26.3")
     testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:3.0.1")
 }
+
+sourceSets.main { java.srcDir("src/compat-$compat/java") }
 
 tasks.test {
     useJUnitPlatform()
@@ -59,17 +62,19 @@ tasks.test {
 tasks.processResources {
     inputs.property("version", project.version)
     inputs.property("mod_id", modId)
+    inputs.property("mc_version", minecraftVersion)
+    inputs.property("java_version", javaVersion)
     filesMatching("fabric.mod.json") {
-        expand(mapOf("version" to project.version, "mod_id" to modId))
+        expand(mapOf("version" to project.version, "mod_id" to modId, "mc_version" to minecraftVersion, "java_version" to javaVersion))
     }
 }
 
 tasks.shadowJar {
     archiveClassifier.set("dev-shadow")
     configurations = listOf(shade)
-    relocate("net.dv8tion.jda", "com.westwardmc.dmcl.shaded.jda")
-    relocate("com.electronwill.nightconfig", "com.westwardmc.dmcl.shaded.nightconfig")
-    relocate("org.sqlite", "com.westwardmc.dmcl.shaded.sqlite")
+    relocate("net.dv8tion.jda", "com.n1ghtlydev.dmcl.shaded.jda")
+    relocate("com.electronwill.nightconfig", "com.n1ghtlydev.dmcl.shaded.nightconfig")
+    relocate("org.sqlite", "com.n1ghtlydev.dmcl.shaded.sqlite")
     mergeServiceFiles()
     minimize {
         exclude(dependency("org.xerial:sqlite-jdbc:.*"))
@@ -89,7 +94,7 @@ tasks.withType<JavaCompile>().configureEach {
 tasks.register<Copy>("installMod") {
     dependsOn(tasks.remapJar)
     from(tasks.remapJar.flatMap { it.archiveFile })
-    val target = file("/mnt/c/dev/mc-server/mods")
+    val target = file(providers.gradleProperty("dmclInstallDir").orElse("").get().ifEmpty { "/nonexistent" })
     onlyIf { target.isDirectory }
     into(target)
     doLast {
@@ -97,6 +102,7 @@ tasks.register<Copy>("installMod") {
     }
 }
 
+// Opt-in: ./gradlew build -PdmclInstallDir=/path/to/server/mods
 tasks.build {
     finalizedBy(tasks.named("installMod"))
 }
@@ -105,7 +111,7 @@ tasks.build {
 // Run with: MODRINTH_TOKEN=... ./gradlew modrinth
 modrinth {
     token.set(System.getenv("MODRINTH_TOKEN") ?: "")
-    projectId.set(System.getenv("MODRINTH_PROJECT_ID") ?: "dmcl")
+    projectId.set(System.getenv("MODRINTH_PROJECT_ID") ?: "v2ecfuiA")
     versionNumber.set(modVersion)
     versionType.set("release")
     uploadFile.set(tasks.remapJar)

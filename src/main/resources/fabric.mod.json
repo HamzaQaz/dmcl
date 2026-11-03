@@ -6,15 +6,16 @@
   "description": "Minecraft to Discord chat bridge with full feature parity.",
   "authors": ["n1ght"],
   "license": "MIT",
+  "icon": "assets/dmcl/icon.png",
   "environment": "server",
   "entrypoints": {
-    "server": ["com.westwardmc.dmcl.DmclMod"]
+    "server": ["com.n1ghtlydev.dmcl.DmclMod"]
   },
   "mixins": ["dmcl.mixins.json"],
   "depends": {
     "fabricloader": ">=0.16.0",
     "fabric-api": "*",
-    "minecraft": ">=1.21.1 <1.21.4",
-    "java": ">=21"
+    "minecraft": "${mc_version}",
+    "java": ">=${java_version}"
   }
 }

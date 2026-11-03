@@ -1,0 +1,11 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven { url = 'https://maven.minecraftforge.net' }
+    }
+    plugins {
+        // ForgeGradle 6 covers 1.21.1-1.21.5; newer Minecraft needs ForgeGradle 7 (-PfgVersion=...).
+        id 'net.minecraftforge.gradle' version (settings.providers.gradleProperty('fgVersion').getOrElse('[6.0.24,6.2)'))
+    }
+}
+rootProject.name = 'dmcl-forge'

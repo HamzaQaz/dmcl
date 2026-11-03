@@ -1,0 +1,25 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+license = "MIT"
+
+[[mods]]
+modId = "dmcl"
+version = "${version}"
+displayName = "DMCL"
+logoFile = "assets/dmcl/icon.png"
+authors = "n1ght"
+description = "Minecraft to Discord chat bridge with full feature parity."
+
+[[dependencies.dmcl]]
+modId = "neoforge"
+type = "required"
+versionRange = "[${neo_version},)"
+ordering = "NONE"
+side = "SERVER"
+
+[[dependencies.dmcl]]
+modId = "minecraft"
+type = "required"
+versionRange = "[${mc_version}]"
+ordering = "NONE"
+side = "SERVER"

@@ -10,7 +10,7 @@
 
 **Spec:** `docs/superpowers/specs/2026-05-03-mc-discord-chat-bridge-design.md`
 
-**Repo root in all paths:** `/home/night/projects/halfservers/westwardmc/dmcl`
+**Repo root in all paths:** `/home/night/projects/halfservers/n1ghtlydev/dmcl`
 
 ---
 
@@ -42,14 +42,14 @@
 - Create: `gradle.properties`
 - Create: `gradle/wrapper/gradle-wrapper.properties`
 - Create: `src/main/resources/fabric.mod.json`
-- Create: `src/main/java/com/westwardmc/dmcl/DmclMod.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/DmclMod.java`
 - Create: `.gitignore`
 
 - [ ] **Step 1.1: Write `gradle.properties`**
 
 ```properties
 # Project
-group = com.westwardmc
+group = com.n1ghtlydev
 mod_id = dmcl
 mod_version = 0.1.0
 
@@ -144,7 +144,7 @@ tasks.withType<JavaCompile>().configureEach {
   "license": "MIT",
   "environment": "server",
   "entrypoints": {
-    "main": ["com.westwardmc.dmcl.DmclMod"]
+    "main": ["com.n1ghtlydev.dmcl.DmclMod"]
   },
   "depends": {
     "fabricloader": ">=0.16.0",
@@ -158,7 +158,7 @@ tasks.withType<JavaCompile>().configureEach {
 - [ ] **Step 1.5: Write the placeholder `DmclMod.java`**
 
 ```java
-package com.westwardmc.dmcl;
+package com.n1ghtlydev.dmcl;
 
 import net.fabricmc.api.DedicatedServerModInitializer;
 import org.slf4j.Logger;
@@ -177,7 +177,7 @@ public final class DmclMod implements DedicatedServerModInitializer {
 Update `fabric.mod.json` entrypoint key from `main` to `server`:
 
 ```json
-"entrypoints": { "server": ["com.westwardmc.dmcl.DmclMod"] }
+"entrypoints": { "server": ["com.n1ghtlydev.dmcl.DmclMod"] }
 ```
 
 - [ ] **Step 1.6: Write `.gitignore`**
@@ -215,7 +215,7 @@ git init
 git add .gitignore settings.gradle.kts build.gradle.kts gradle.properties \
     gradle/ gradlew gradlew.bat \
     src/main/resources/fabric.mod.json \
-    src/main/java/com/westwardmc/dmcl/DmclMod.java
+    src/main/java/com/n1ghtlydev/dmcl/DmclMod.java
 git commit -m "chore: scaffold fabric 1.21.1 mod with loom"
 ```
 
@@ -254,9 +254,9 @@ After `tasks.processResources` block, add:
 tasks.shadowJar {
     archiveClassifier.set("dev-shadow")
     configurations = listOf(shade)
-    relocate("net.dv8tion.jda", "com.westwardmc.dmcl.shaded.jda")
-    relocate("com.electronwill.nightconfig", "com.westwardmc.dmcl.shaded.nightconfig")
-    relocate("org.sqlite", "com.westwardmc.dmcl.shaded.sqlite")
+    relocate("net.dv8tion.jda", "com.n1ghtlydev.dmcl.shaded.jda")
+    relocate("com.electronwill.nightconfig", "com.n1ghtlydev.dmcl.shaded.nightconfig")
+    relocate("org.sqlite", "com.n1ghtlydev.dmcl.shaded.sqlite")
     mergeServiceFiles()
     minimize {
         exclude(dependency("org.xerial:sqlite-jdbc:.*"))
@@ -272,7 +272,7 @@ tasks.remapJar {
 - [ ] **Step 2.2: Verify shaded jar builds**
 
 Run: `./gradlew build`
-Expected: BUILD SUCCESSFUL. `build/libs/dmcl-0.1.0.jar` contains shaded packages under `com/westwardmc/dmcl/shaded/`.
+Expected: BUILD SUCCESSFUL. `build/libs/dmcl-0.1.0.jar` contains shaded packages under `com/n1ghtlydev/dmcl/shaded/`.
 
 Verify:
 ```bash
@@ -358,9 +358,9 @@ tasks.test {
 
 - [ ] **Step 4.2: Write a smoke test to verify JUnit wiring**
 
-Create `src/test/java/com/westwardmc/dmcl/SmokeTest.java`:
+Create `src/test/java/com/n1ghtlydev/dmcl/SmokeTest.java`:
 ```java
-package com.westwardmc.dmcl;
+package com.n1ghtlydev.dmcl;
 
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -381,7 +381,7 @@ Expected: 1 test passed.
 - [ ] **Step 4.4: Commit**
 
 ```bash
-git add build.gradle.kts src/test/java/com/westwardmc/dmcl/SmokeTest.java
+git add build.gradle.kts src/test/java/com/n1ghtlydev/dmcl/SmokeTest.java
 git commit -m "test: configure JUnit 5 + Mockito + WireMock + AssertJ"
 ```
 
@@ -391,16 +391,16 @@ git commit -m "test: configure JUnit 5 + Mockito + WireMock + AssertJ"
 ### Task 5: Define enums and `Result<T,E>` sealed type
 
 **Files:**
-- Create: `src/main/java/com/westwardmc/dmcl/core/domain/Source.java`
-- Create: `src/main/java/com/westwardmc/dmcl/core/domain/Scope.java`
-- Create: `src/main/java/com/westwardmc/dmcl/core/domain/Result.java`
-- Create: `src/main/java/com/westwardmc/dmcl/core/domain/BridgeError.java`
-- Create: `src/test/java/com/westwardmc/dmcl/core/domain/ResultTest.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/domain/Source.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/domain/Scope.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/domain/Result.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/domain/BridgeError.java`
+- Create: `src/test/java/com/n1ghtlydev/dmcl/core/domain/ResultTest.java`
 
 - [ ] **Step 5.1: Write `ResultTest.java` (failing)**
 
 ```java
-package com.westwardmc.dmcl.core.domain;
+package com.n1ghtlydev.dmcl.core.domain;
 
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -444,20 +444,20 @@ Expected: compile errors for missing `Result` and `BridgeError`.
 
 ```java
 // Source.java
-package com.westwardmc.dmcl.core.domain;
+package com.n1ghtlydev.dmcl.core.domain;
 public enum Source { MINECRAFT, DISCORD }
 ```
 
 ```java
 // Scope.java
-package com.westwardmc.dmcl.core.domain;
+package com.n1ghtlydev.dmcl.core.domain;
 public enum Scope { GLOBAL, STAFF, DEATHS, ADVANCEMENTS, LIFECYCLE, CUSTOM }
 ```
 
 - [ ] **Step 5.4: Implement `BridgeError` sealed type**
 
 ```java
-package com.westwardmc.dmcl.core.domain;
+package com.n1ghtlydev.dmcl.core.domain;
 
 import java.time.Duration;
 
@@ -473,7 +473,7 @@ public sealed interface BridgeError {
 - [ ] **Step 5.5: Implement `Result<T,E>`**
 
 ```java
-package com.westwardmc.dmcl.core.domain;
+package com.n1ghtlydev.dmcl.core.domain;
 
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -519,8 +519,8 @@ Expected: PASS, all 4 ResultTest cases.
 - [ ] **Step 5.7: Commit**
 
 ```bash
-git add src/main/java/com/westwardmc/dmcl/core/domain/{Source,Scope,Result,BridgeError}.java \
-        src/test/java/com/westwardmc/dmcl/core/domain/ResultTest.java
+git add src/main/java/com/n1ghtlydev/dmcl/core/domain/{Source,Scope,Result,BridgeError}.java \
+        src/test/java/com/n1ghtlydev/dmcl/core/domain/ResultTest.java
 git commit -m "feat(core): add Source, Scope, Result<T,E>, BridgeError sealed types"
 ```
 
@@ -529,16 +529,16 @@ git commit -m "feat(core): add Source, Scope, Result<T,E>, BridgeError sealed ty
 ### Task 6: Domain records: `Author`, `Attachment`, `MentionToken`, `ReplyContext`
 
 **Files:**
-- Create: `src/main/java/com/westwardmc/dmcl/core/domain/Author.java`
-- Create: `src/main/java/com/westwardmc/dmcl/core/domain/Attachment.java`
-- Create: `src/main/java/com/westwardmc/dmcl/core/domain/MentionToken.java`
-- Create: `src/main/java/com/westwardmc/dmcl/core/domain/ReplyContext.java`
-- Create: `src/test/java/com/westwardmc/dmcl/core/domain/DomainRecordsTest.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/domain/Author.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/domain/Attachment.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/domain/MentionToken.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/domain/ReplyContext.java`
+- Create: `src/test/java/com/n1ghtlydev/dmcl/core/domain/DomainRecordsTest.java`
 
 - [ ] **Step 6.1: Write tests (failing)**
 
 ```java
-package com.westwardmc.dmcl.core.domain;
+package com.n1ghtlydev.dmcl.core.domain;
 
 import org.junit.jupiter.api.Test;
 import java.net.URI;
@@ -591,7 +591,7 @@ Expected: FAIL.
 - [ ] **Step 6.3: Implement `Author`**
 
 ```java
-package com.westwardmc.dmcl.core.domain;
+package com.n1ghtlydev.dmcl.core.domain;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -616,7 +616,7 @@ public record Author(
 - [ ] **Step 6.4: Implement `Attachment`**
 
 ```java
-package com.westwardmc.dmcl.core.domain;
+package com.n1ghtlydev.dmcl.core.domain;
 
 import java.net.URI;
 
@@ -628,7 +628,7 @@ public record Attachment(Kind kind, URI url, String filename, long sizeBytes) {
 - [ ] **Step 6.5: Implement `MentionToken`**
 
 ```java
-package com.westwardmc.dmcl.core.domain;
+package com.n1ghtlydev.dmcl.core.domain;
 
 public sealed interface MentionToken {
     record User(long discordId) implements MentionToken {}
@@ -642,7 +642,7 @@ public sealed interface MentionToken {
 - [ ] **Step 6.6: Implement `ReplyContext`**
 
 ```java
-package com.westwardmc.dmcl.core.domain;
+package com.n1ghtlydev.dmcl.core.domain;
 
 import java.net.URI;
 import java.util.Optional;
@@ -658,8 +658,8 @@ Expected: all PASS.
 - [ ] **Step 6.8: Commit**
 
 ```bash
-git add src/main/java/com/westwardmc/dmcl/core/domain/{Author,Attachment,MentionToken,ReplyContext}.java \
-        src/test/java/com/westwardmc/dmcl/core/domain/DomainRecordsTest.java
+git add src/main/java/com/n1ghtlydev/dmcl/core/domain/{Author,Attachment,MentionToken,ReplyContext}.java \
+        src/test/java/com/n1ghtlydev/dmcl/core/domain/DomainRecordsTest.java
 git commit -m "feat(core): Author, Attachment, MentionToken, ReplyContext records"
 ```
 
@@ -668,15 +668,15 @@ git commit -m "feat(core): Author, Attachment, MentionToken, ReplyContext record
 ### Task 7: `BridgeMessage`, `LinkedAccount`, `PendingLink`
 
 **Files:**
-- Create: `src/main/java/com/westwardmc/dmcl/core/domain/BridgeMessage.java`
-- Create: `src/main/java/com/westwardmc/dmcl/core/domain/LinkedAccount.java`
-- Create: `src/main/java/com/westwardmc/dmcl/core/domain/PendingLink.java`
-- Create: `src/test/java/com/westwardmc/dmcl/core/domain/BridgeMessageTest.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/domain/BridgeMessage.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/domain/LinkedAccount.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/domain/PendingLink.java`
+- Create: `src/test/java/com/n1ghtlydev/dmcl/core/domain/BridgeMessageTest.java`
 
 - [ ] **Step 7.1: Write tests**
 
 ```java
-package com.westwardmc.dmcl.core.domain;
+package com.n1ghtlydev.dmcl.core.domain;
 
 import org.junit.jupiter.api.Test;
 import java.time.Instant;
@@ -723,7 +723,7 @@ Expected: FAIL.
 - [ ] **Step 7.3: Implement `BridgeMessage`**
 
 ```java
-package com.westwardmc.dmcl.core.domain;
+package com.n1ghtlydev.dmcl.core.domain;
 
 import java.time.Instant;
 import java.util.List;
@@ -751,7 +751,7 @@ public record BridgeMessage(
 - [ ] **Step 7.4: Implement `LinkedAccount`**
 
 ```java
-package com.westwardmc.dmcl.core.domain;
+package com.n1ghtlydev.dmcl.core.domain;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -762,7 +762,7 @@ public record LinkedAccount(UUID mcUuid, long discordId, Instant linkedAt) {}
 - [ ] **Step 7.5: Implement `PendingLink` with `isExpired`**
 
 ```java
-package com.westwardmc.dmcl.core.domain;
+package com.n1ghtlydev.dmcl.core.domain;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -782,8 +782,8 @@ Expected: all PASS.
 - [ ] **Step 7.7: Commit**
 
 ```bash
-git add src/main/java/com/westwardmc/dmcl/core/domain/{BridgeMessage,LinkedAccount,PendingLink}.java \
-        src/test/java/com/westwardmc/dmcl/core/domain/BridgeMessageTest.java
+git add src/main/java/com/n1ghtlydev/dmcl/core/domain/{BridgeMessage,LinkedAccount,PendingLink}.java \
+        src/test/java/com/n1ghtlydev/dmcl/core/domain/BridgeMessageTest.java
 git commit -m "feat(core): BridgeMessage, LinkedAccount, PendingLink records"
 ```
 
@@ -792,15 +792,15 @@ git commit -m "feat(core): BridgeMessage, LinkedAccount, PendingLink records"
 ### Task 8: `RenderedMcText` builder (pure, no MC import)
 
 **Files:**
-- Create: `src/main/java/com/westwardmc/dmcl/core/domain/RenderedMcText.java`
-- Create: `src/test/java/com/westwardmc/dmcl/core/domain/RenderedMcTextTest.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/domain/RenderedMcText.java`
+- Create: `src/test/java/com/n1ghtlydev/dmcl/core/domain/RenderedMcTextTest.java`
 
 `RenderedMcText` is a tree of typed spans the Fabric adapter converts to Minecraft `Text`. No MC imports here.
 
 - [ ] **Step 8.1: Write tests**
 
 ```java
-package com.westwardmc.dmcl.core.domain;
+package com.n1ghtlydev.dmcl.core.domain;
 
 import org.junit.jupiter.api.Test;
 import java.util.List;
@@ -861,7 +861,7 @@ Expected: FAIL.
 - [ ] **Step 8.3: Implement `RenderedMcText`**
 
 ```java
-package com.westwardmc.dmcl.core.domain;
+package com.n1ghtlydev.dmcl.core.domain;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -942,8 +942,8 @@ Expected: all PASS.
 - [ ] **Step 8.5: Commit**
 
 ```bash
-git add src/main/java/com/westwardmc/dmcl/core/domain/RenderedMcText.java \
-        src/test/java/com/westwardmc/dmcl/core/domain/RenderedMcTextTest.java
+git add src/main/java/com/n1ghtlydev/dmcl/core/domain/RenderedMcText.java \
+        src/test/java/com/n1ghtlydev/dmcl/core/domain/RenderedMcTextTest.java
 git commit -m "feat(core): RenderedMcText span tree (no MC import)"
 ```
 
@@ -953,26 +953,26 @@ git commit -m "feat(core): RenderedMcText span tree (no MC import)"
 ### Task 9: Port interfaces
 
 **Files:**
-- Create: `src/main/java/com/westwardmc/dmcl/core/port/Clock.java`
-- Create: `src/main/java/com/westwardmc/dmcl/core/port/AvatarService.java`
-- Create: `src/main/java/com/westwardmc/dmcl/core/port/LinkRepo.java`
-- Create: `src/main/java/com/westwardmc/dmcl/core/port/ChannelMap.java`
-- Create: `src/main/java/com/westwardmc/dmcl/core/port/DiscordPort.java`
-- Create: `src/main/java/com/westwardmc/dmcl/core/port/MinecraftPort.java`
-- Create: `src/main/java/com/westwardmc/dmcl/core/port/PostedRef.java`
-- Create: `src/main/java/com/westwardmc/dmcl/core/port/SystemEvent.java`
-- Create: `src/main/java/com/westwardmc/dmcl/core/port/ReactionEvent.java`
-- Create: `src/main/java/com/westwardmc/dmcl/core/port/OnlinePlayer.java`
-- Create: `src/main/java/com/westwardmc/dmcl/core/port/LifecycleEvent.java`
-- Create: `src/main/java/com/westwardmc/dmcl/core/port/PlayerEvent.java`
-- Create: `src/main/java/com/westwardmc/dmcl/core/port/ChannelBinding.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/port/Clock.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/port/AvatarService.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/port/LinkRepo.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/port/ChannelMap.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/port/DiscordPort.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/port/MinecraftPort.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/port/PostedRef.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/port/SystemEvent.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/port/ReactionEvent.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/port/OnlinePlayer.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/port/LifecycleEvent.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/port/PlayerEvent.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/port/ChannelBinding.java`
 
 Ports are interfaces only (plus the small DTOs they reference). No tests at this stage; behavior tests come with the orchestrator.
 
 - [ ] **Step 9.1: `Clock`**
 
 ```java
-package com.westwardmc.dmcl.core.port;
+package com.n1ghtlydev.dmcl.core.port;
 
 import java.time.Instant;
 
@@ -985,7 +985,7 @@ public interface Clock {
 - [ ] **Step 9.2: `AvatarService`**
 
 ```java
-package com.westwardmc.dmcl.core.port;
+package com.n1ghtlydev.dmcl.core.port;
 
 import java.util.UUID;
 
@@ -997,10 +997,10 @@ public interface AvatarService {
 - [ ] **Step 9.3: `LinkRepo`**
 
 ```java
-package com.westwardmc.dmcl.core.port;
+package com.n1ghtlydev.dmcl.core.port;
 
-import com.westwardmc.dmcl.core.domain.LinkedAccount;
-import com.westwardmc.dmcl.core.domain.PendingLink;
+import com.n1ghtlydev.dmcl.core.domain.LinkedAccount;
+import com.n1ghtlydev.dmcl.core.domain.PendingLink;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -1022,9 +1022,9 @@ public interface LinkRepo {
 
 ```java
 // ChannelBinding.java
-package com.westwardmc.dmcl.core.port;
+package com.n1ghtlydev.dmcl.core.port;
 
-import com.westwardmc.dmcl.core.domain.Scope;
+import com.n1ghtlydev.dmcl.core.domain.Scope;
 import java.util.List;
 import java.util.Optional;
 
@@ -1041,9 +1041,9 @@ public record ChannelBinding(
 
 ```java
 // ChannelMap.java
-package com.westwardmc.dmcl.core.port;
+package com.n1ghtlydev.dmcl.core.port;
 
-import com.westwardmc.dmcl.core.domain.Scope;
+import com.n1ghtlydev.dmcl.core.domain.Scope;
 import java.util.List;
 import java.util.Optional;
 
@@ -1058,14 +1058,14 @@ public interface ChannelMap {
 
 ```java
 // OnlinePlayer.java
-package com.westwardmc.dmcl.core.port;
+package com.n1ghtlydev.dmcl.core.port;
 import java.util.UUID;
 public record OnlinePlayer(UUID uuid, String name) {}
 ```
 
 ```java
 // LifecycleEvent.java
-package com.westwardmc.dmcl.core.port;
+package com.n1ghtlydev.dmcl.core.port;
 public sealed interface LifecycleEvent {
     record Started() implements LifecycleEvent {}
     record Stopped() implements LifecycleEvent {}
@@ -1075,7 +1075,7 @@ public sealed interface LifecycleEvent {
 
 ```java
 // PlayerEvent.java
-package com.westwardmc.dmcl.core.port;
+package com.n1ghtlydev.dmcl.core.port;
 import java.util.UUID;
 public sealed interface PlayerEvent {
     record Joined(UUID uuid, String name) implements PlayerEvent {}
@@ -1087,7 +1087,7 @@ public sealed interface PlayerEvent {
 
 ```java
 // SystemEvent.java
-package com.westwardmc.dmcl.core.port;
+package com.n1ghtlydev.dmcl.core.port;
 public sealed interface SystemEvent {
     record Lifecycle(LifecycleEvent ev) implements SystemEvent {}
     record Player(PlayerEvent ev) implements SystemEvent {}
@@ -1096,22 +1096,22 @@ public sealed interface SystemEvent {
 
 ```java
 // ReactionEvent.java
-package com.westwardmc.dmcl.core.port;
+package com.n1ghtlydev.dmcl.core.port;
 public record ReactionEvent(String bridgedMessageId, long reactorDiscordId, String reactorName, String emoji) {}
 ```
 
 ```java
 // PostedRef.java
-package com.westwardmc.dmcl.core.port;
+package com.n1ghtlydev.dmcl.core.port;
 public record PostedRef(long channelId, long messageId, String webhookId, String webhookToken) {}
 ```
 
 - [ ] **Step 9.6: `DiscordPort`**
 
 ```java
-package com.westwardmc.dmcl.core.port;
+package com.n1ghtlydev.dmcl.core.port;
 
-import com.westwardmc.dmcl.core.domain.*;
+import com.n1ghtlydev.dmcl.core.domain.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -1136,16 +1136,16 @@ public interface DiscordPort {
 - [ ] **Step 9.7: `MinecraftPort`**
 
 ```java
-package com.westwardmc.dmcl.core.port;
+package com.n1ghtlydev.dmcl.core.port;
 
-import com.westwardmc.dmcl.core.domain.BridgeMessage;
-import com.westwardmc.dmcl.core.domain.RenderedMcText;
+import com.n1ghtlydev.dmcl.core.domain.BridgeMessage;
+import com.n1ghtlydev.dmcl.core.domain.RenderedMcText;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 
 public interface MinecraftPort {
-    void broadcast(com.westwardmc.dmcl.core.domain.Scope scope, RenderedMcText text);
+    void broadcast(com.n1ghtlydev.dmcl.core.domain.Scope scope, RenderedMcText text);
     void sendTo(UUID player, RenderedMcText text);
     Set<OnlinePlayer> getOnlinePlayers();
     String headUrlFor(UUID uuid);
@@ -1164,7 +1164,7 @@ Expected: BUILD SUCCESSFUL.
 - [ ] **Step 9.9: Commit**
 
 ```bash
-git add src/main/java/com/westwardmc/dmcl/core/port/
+git add src/main/java/com/n1ghtlydev/dmcl/core/port/
 git commit -m "feat(core): port interfaces (DiscordPort, MinecraftPort, LinkRepo, ChannelMap, etc)"
 ```
 
@@ -1175,15 +1175,15 @@ git commit -m "feat(core): port interfaces (DiscordPort, MinecraftPort, LinkRepo
 ### Task 10: `McToDiscord` — strip §, escape MD
 
 **Files:**
-- Create: `src/main/java/com/westwardmc/dmcl/core/translate/McToDiscord.java`
-- Create: `src/test/java/com/westwardmc/dmcl/core/translate/McToDiscordTest.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/translate/McToDiscord.java`
+- Create: `src/test/java/com/n1ghtlydev/dmcl/core/translate/McToDiscordTest.java`
 
 `McToDiscord` translates a raw MC chat string into a Discord-safe markdown string. Mentions are resolved by `MentionResolver` in Task 12; this task does only color stripping and MD escaping.
 
 - [ ] **Step 10.1: Write tests**
 
 ```java
-package com.westwardmc.dmcl.core.translate;
+package com.n1ghtlydev.dmcl.core.translate;
 
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -1227,7 +1227,7 @@ Expected: FAIL.
 - [ ] **Step 10.3: Implement `McToDiscord`**
 
 ```java
-package com.westwardmc.dmcl.core.translate;
+package com.n1ghtlydev.dmcl.core.translate;
 
 public final class McToDiscord {
     private McToDiscord() {}
@@ -1277,8 +1277,8 @@ Expected: all PASS.
 - [ ] **Step 10.5: Commit**
 
 ```bash
-git add src/main/java/com/westwardmc/dmcl/core/translate/McToDiscord.java \
-        src/test/java/com/westwardmc/dmcl/core/translate/McToDiscordTest.java
+git add src/main/java/com/n1ghtlydev/dmcl/core/translate/McToDiscord.java \
+        src/test/java/com/n1ghtlydev/dmcl/core/translate/McToDiscordTest.java
 git commit -m "feat(translate): McToDiscord color strip + markdown escape"
 ```
 
@@ -1287,18 +1287,18 @@ git commit -m "feat(translate): McToDiscord color strip + markdown escape"
 ### Task 11: `MentionResolver` — `@name` to `<@id>` for MC outbound, `<@id>` to display for inbound
 
 **Files:**
-- Create: `src/main/java/com/westwardmc/dmcl/core/translate/MentionResolver.java`
-- Create: `src/test/java/com/westwardmc/dmcl/core/translate/MentionResolverTest.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/translate/MentionResolver.java`
+- Create: `src/test/java/com/n1ghtlydev/dmcl/core/translate/MentionResolverTest.java`
 
 The resolver is constructed with snapshots (online roster + linked accounts) so it stays pure and testable.
 
 - [ ] **Step 11.1: Write tests**
 
 ```java
-package com.westwardmc.dmcl.core.translate;
+package com.n1ghtlydev.dmcl.core.translate;
 
-import com.westwardmc.dmcl.core.domain.LinkedAccount;
-import com.westwardmc.dmcl.core.port.OnlinePlayer;
+import com.n1ghtlydev.dmcl.core.domain.LinkedAccount;
+import com.n1ghtlydev.dmcl.core.port.OnlinePlayer;
 import org.junit.jupiter.api.Test;
 import java.time.Instant;
 import java.util.List;
@@ -1360,10 +1360,10 @@ Expected: FAIL.
 - [ ] **Step 11.3: Implement `MentionResolver`**
 
 ```java
-package com.westwardmc.dmcl.core.translate;
+package com.n1ghtlydev.dmcl.core.translate;
 
-import com.westwardmc.dmcl.core.domain.LinkedAccount;
-import com.westwardmc.dmcl.core.port.OnlinePlayer;
+import com.n1ghtlydev.dmcl.core.domain.LinkedAccount;
+import com.n1ghtlydev.dmcl.core.port.OnlinePlayer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -1431,8 +1431,8 @@ Expected: all PASS.
 - [ ] **Step 11.5: Commit**
 
 ```bash
-git add src/main/java/com/westwardmc/dmcl/core/translate/MentionResolver.java \
-        src/test/java/com/westwardmc/dmcl/core/translate/MentionResolverTest.java
+git add src/main/java/com/n1ghtlydev/dmcl/core/translate/MentionResolver.java \
+        src/test/java/com/n1ghtlydev/dmcl/core/translate/MentionResolverTest.java
 git commit -m "feat(translate): MentionResolver for MC->Discord mention rewriting"
 ```
 
@@ -1441,16 +1441,16 @@ git commit -m "feat(translate): MentionResolver for MC->Discord mention rewritin
 ### Task 12: `AttachmentRenderer` — render attachments as hyperlink spans
 
 **Files:**
-- Create: `src/main/java/com/westwardmc/dmcl/core/translate/AttachmentRenderer.java`
-- Create: `src/test/java/com/westwardmc/dmcl/core/translate/AttachmentRendererTest.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/translate/AttachmentRenderer.java`
+- Create: `src/test/java/com/n1ghtlydev/dmcl/core/translate/AttachmentRendererTest.java`
 
 - [ ] **Step 12.1: Write tests**
 
 ```java
-package com.westwardmc.dmcl.core.translate;
+package com.n1ghtlydev.dmcl.core.translate;
 
-import com.westwardmc.dmcl.core.domain.Attachment;
-import com.westwardmc.dmcl.core.domain.RenderedMcText;
+import com.n1ghtlydev.dmcl.core.domain.Attachment;
+import com.n1ghtlydev.dmcl.core.domain.RenderedMcText;
 import org.junit.jupiter.api.Test;
 import java.net.URI;
 import java.util.List;
@@ -1497,10 +1497,10 @@ Expected: FAIL.
 - [ ] **Step 12.3: Implement `AttachmentRenderer`**
 
 ```java
-package com.westwardmc.dmcl.core.translate;
+package com.n1ghtlydev.dmcl.core.translate;
 
-import com.westwardmc.dmcl.core.domain.Attachment;
-import com.westwardmc.dmcl.core.domain.RenderedMcText;
+import com.n1ghtlydev.dmcl.core.domain.Attachment;
+import com.n1ghtlydev.dmcl.core.domain.RenderedMcText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -1550,8 +1550,8 @@ Expected: all PASS.
 - [ ] **Step 12.5: Commit**
 
 ```bash
-git add src/main/java/com/westwardmc/dmcl/core/translate/AttachmentRenderer.java \
-        src/test/java/com/westwardmc/dmcl/core/translate/AttachmentRendererTest.java
+git add src/main/java/com/n1ghtlydev/dmcl/core/translate/AttachmentRenderer.java \
+        src/test/java/com/n1ghtlydev/dmcl/core/translate/AttachmentRendererTest.java
 git commit -m "feat(translate): AttachmentRenderer for typed clickable attachments"
 ```
 
@@ -1559,19 +1559,19 @@ git commit -m "feat(translate): AttachmentRenderer for typed clickable attachmen
 ### Task 13: `DiscordToMc.markdown()` — bold/italic/code/spoiler parser
 
 **Files:**
-- Create: `src/main/java/com/westwardmc/dmcl/core/translate/DiscordMd.java`
-- Create: `src/test/java/com/westwardmc/dmcl/core/translate/DiscordMdTest.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/translate/DiscordMd.java`
+- Create: `src/test/java/com/n1ghtlydev/dmcl/core/translate/DiscordMdTest.java`
 
 `DiscordMd` parses Discord markdown into `RenderedMcText.Span.Plain` spans with the right `Style` set.
 
 - [ ] **Step 13.1: Write tests**
 
 ```java
-package com.westwardmc.dmcl.core.translate;
+package com.n1ghtlydev.dmcl.core.translate;
 
-import com.westwardmc.dmcl.core.domain.RenderedMcText;
-import com.westwardmc.dmcl.core.domain.RenderedMcText.Span.Plain;
-import com.westwardmc.dmcl.core.domain.RenderedMcText.Style;
+import com.n1ghtlydev.dmcl.core.domain.RenderedMcText;
+import com.n1ghtlydev.dmcl.core.domain.RenderedMcText.Span.Plain;
+import com.n1ghtlydev.dmcl.core.domain.RenderedMcText.Style;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -1663,12 +1663,12 @@ Expected: FAIL.
 - [ ] **Step 13.3: Implement `DiscordMd` (recursive-descent)**
 
 ```java
-package com.westwardmc.dmcl.core.translate;
+package com.n1ghtlydev.dmcl.core.translate;
 
-import com.westwardmc.dmcl.core.domain.RenderedMcText;
-import com.westwardmc.dmcl.core.domain.RenderedMcText.Color;
-import com.westwardmc.dmcl.core.domain.RenderedMcText.Span;
-import com.westwardmc.dmcl.core.domain.RenderedMcText.Style;
+import com.n1ghtlydev.dmcl.core.domain.RenderedMcText;
+import com.n1ghtlydev.dmcl.core.domain.RenderedMcText.Color;
+import com.n1ghtlydev.dmcl.core.domain.RenderedMcText.Span;
+import com.n1ghtlydev.dmcl.core.domain.RenderedMcText.Style;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -1792,8 +1792,8 @@ Expected: all PASS.
 - [ ] **Step 13.5: Commit**
 
 ```bash
-git add src/main/java/com/westwardmc/dmcl/core/translate/DiscordMd.java \
-        src/test/java/com/westwardmc/dmcl/core/translate/DiscordMdTest.java
+git add src/main/java/com/n1ghtlydev/dmcl/core/translate/DiscordMd.java \
+        src/test/java/com/n1ghtlydev/dmcl/core/translate/DiscordMdTest.java
 git commit -m "feat(translate): DiscordMd parser for bold/italic/underline/strike/code/spoiler"
 ```
 
@@ -1802,18 +1802,18 @@ git commit -m "feat(translate): DiscordMd parser for bold/italic/underline/strik
 ### Task 14: `DiscordToMc` — orchestrate MD + mentions + emoji + reply prefix
 
 **Files:**
-- Create: `src/main/java/com/westwardmc/dmcl/core/translate/DiscordToMc.java`
-- Create: `src/test/java/com/westwardmc/dmcl/core/translate/DiscordToMcTest.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/translate/DiscordToMc.java`
+- Create: `src/test/java/com/n1ghtlydev/dmcl/core/translate/DiscordToMcTest.java`
 
 `DiscordToMc` takes a `BridgeMessage` from Discord and produces a `RenderedMcText` ready for `MinecraftPort.broadcast`. It composes `DiscordMd`, mention rewriting, emoji rewriting, embed summary, attachment rendering, and reply prefix.
 
 - [ ] **Step 14.1: Write tests**
 
 ```java
-package com.westwardmc.dmcl.core.translate;
+package com.n1ghtlydev.dmcl.core.translate;
 
-import com.westwardmc.dmcl.core.domain.*;
-import com.westwardmc.dmcl.core.port.OnlinePlayer;
+import com.n1ghtlydev.dmcl.core.domain.*;
+import com.n1ghtlydev.dmcl.core.port.OnlinePlayer;
 import org.junit.jupiter.api.Test;
 import java.net.URI;
 import java.time.Instant;
@@ -1908,11 +1908,11 @@ Expected: FAIL.
 - [ ] **Step 14.3: Implement `DiscordToMc`**
 
 ```java
-package com.westwardmc.dmcl.core.translate;
+package com.n1ghtlydev.dmcl.core.translate;
 
-import com.westwardmc.dmcl.core.domain.*;
-import com.westwardmc.dmcl.core.domain.RenderedMcText.Color;
-import com.westwardmc.dmcl.core.domain.RenderedMcText.Style;
+import com.n1ghtlydev.dmcl.core.domain.*;
+import com.n1ghtlydev.dmcl.core.domain.RenderedMcText.Color;
+import com.n1ghtlydev.dmcl.core.domain.RenderedMcText.Style;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -2009,8 +2009,8 @@ Expected: all PASS.
 - [ ] **Step 14.5: Commit**
 
 ```bash
-git add src/main/java/com/westwardmc/dmcl/core/translate/DiscordToMc.java \
-        src/test/java/com/westwardmc/dmcl/core/translate/DiscordToMcTest.java
+git add src/main/java/com/n1ghtlydev/dmcl/core/translate/DiscordToMc.java \
+        src/test/java/com/n1ghtlydev/dmcl/core/translate/DiscordToMcTest.java
 git commit -m "feat(translate): DiscordToMc orchestrates md, mentions, emoji, reply, attachments"
 ```
 
@@ -2019,18 +2019,18 @@ git commit -m "feat(translate): DiscordToMc orchestrates md, mentions, emoji, re
 ### Task 15: System event renderer (joins/leaves/deaths/lifecycle to MC and Discord)
 
 **Files:**
-- Create: `src/main/java/com/westwardmc/dmcl/core/translate/SystemEventRenderer.java`
-- Create: `src/test/java/com/westwardmc/dmcl/core/translate/SystemEventRendererTest.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/translate/SystemEventRenderer.java`
+- Create: `src/test/java/com/n1ghtlydev/dmcl/core/translate/SystemEventRendererTest.java`
 
 Builds the canonical text for system events used by both sides (Discord embed text + MC system messages).
 
 - [ ] **Step 15.1: Write tests**
 
 ```java
-package com.westwardmc.dmcl.core.translate;
+package com.n1ghtlydev.dmcl.core.translate;
 
-import com.westwardmc.dmcl.core.port.LifecycleEvent;
-import com.westwardmc.dmcl.core.port.PlayerEvent;
+import com.n1ghtlydev.dmcl.core.port.LifecycleEvent;
+import com.n1ghtlydev.dmcl.core.port.PlayerEvent;
 import org.junit.jupiter.api.Test;
 import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -2074,10 +2074,10 @@ Expected: FAIL.
 - [ ] **Step 15.3: Implement `SystemEventRenderer`**
 
 ```java
-package com.westwardmc.dmcl.core.translate;
+package com.n1ghtlydev.dmcl.core.translate;
 
-import com.westwardmc.dmcl.core.port.LifecycleEvent;
-import com.westwardmc.dmcl.core.port.PlayerEvent;
+import com.n1ghtlydev.dmcl.core.port.LifecycleEvent;
+import com.n1ghtlydev.dmcl.core.port.PlayerEvent;
 
 public final class SystemEventRenderer {
     private SystemEventRenderer() {}
@@ -2111,8 +2111,8 @@ Expected: all PASS.
 - [ ] **Step 15.5: Commit**
 
 ```bash
-git add src/main/java/com/westwardmc/dmcl/core/translate/SystemEventRenderer.java \
-        src/test/java/com/westwardmc/dmcl/core/translate/SystemEventRendererTest.java
+git add src/main/java/com/n1ghtlydev/dmcl/core/translate/SystemEventRenderer.java \
+        src/test/java/com/n1ghtlydev/dmcl/core/translate/SystemEventRendererTest.java
 git commit -m "feat(translate): SystemEventRenderer for joins/deaths/lifecycle cards"
 ```
 
@@ -2122,13 +2122,13 @@ git commit -m "feat(translate): SystemEventRenderer for joins/deaths/lifecycle c
 ### Task 16: `EventBus` (single-thread executor wrapper)
 
 **Files:**
-- Create: `src/main/java/com/westwardmc/dmcl/core/orchestrator/EventBus.java`
-- Create: `src/test/java/com/westwardmc/dmcl/core/orchestrator/EventBusTest.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/orchestrator/EventBus.java`
+- Create: `src/test/java/com/n1ghtlydev/dmcl/core/orchestrator/EventBusTest.java`
 
 - [ ] **Step 16.1: Write tests**
 
 ```java
-package com.westwardmc.dmcl.core.orchestrator;
+package com.n1ghtlydev.dmcl.core.orchestrator;
 
 import org.junit.jupiter.api.Test;
 import java.util.concurrent.CountDownLatch;
@@ -2179,7 +2179,7 @@ Expected: FAIL.
 - [ ] **Step 16.3: Implement `EventBus`**
 
 ```java
-package com.westwardmc.dmcl.core.orchestrator;
+package com.n1ghtlydev.dmcl.core.orchestrator;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -2228,8 +2228,8 @@ Expected: all PASS.
 - [ ] **Step 16.5: Commit**
 
 ```bash
-git add src/main/java/com/westwardmc/dmcl/core/orchestrator/EventBus.java \
-        src/test/java/com/westwardmc/dmcl/core/orchestrator/EventBusTest.java
+git add src/main/java/com/n1ghtlydev/dmcl/core/orchestrator/EventBus.java \
+        src/test/java/com/n1ghtlydev/dmcl/core/orchestrator/EventBusTest.java
 git commit -m "feat(orchestrator): EventBus single-thread executor"
 ```
 
@@ -2238,16 +2238,16 @@ git commit -m "feat(orchestrator): EventBus single-thread executor"
 ### Task 17: `BridgeOrchestrator` wires ports + translation, behavior tests with mocks
 
 **Files:**
-- Create: `src/main/java/com/westwardmc/dmcl/core/orchestrator/BridgeOrchestrator.java`
-- Create: `src/test/java/com/westwardmc/dmcl/core/orchestrator/BridgeOrchestratorTest.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/core/orchestrator/BridgeOrchestrator.java`
+- Create: `src/test/java/com/n1ghtlydev/dmcl/core/orchestrator/BridgeOrchestratorTest.java`
 
 - [ ] **Step 17.1: Write tests (London-school: assert collaborations)**
 
 ```java
-package com.westwardmc.dmcl.core.orchestrator;
+package com.n1ghtlydev.dmcl.core.orchestrator;
 
-import com.westwardmc.dmcl.core.domain.*;
-import com.westwardmc.dmcl.core.port.*;
+import com.n1ghtlydev.dmcl.core.domain.*;
+import com.n1ghtlydev.dmcl.core.port.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -2382,11 +2382,11 @@ Expected: FAIL.
 - [ ] **Step 17.3: Implement `BridgeOrchestrator`**
 
 ```java
-package com.westwardmc.dmcl.core.orchestrator;
+package com.n1ghtlydev.dmcl.core.orchestrator;
 
-import com.westwardmc.dmcl.core.domain.*;
-import com.westwardmc.dmcl.core.port.*;
-import com.westwardmc.dmcl.core.translate.*;
+import com.n1ghtlydev.dmcl.core.domain.*;
+import com.n1ghtlydev.dmcl.core.port.*;
+import com.n1ghtlydev.dmcl.core.translate.*;
 
 import java.security.SecureRandom;
 import java.time.Duration;
@@ -2509,8 +2509,8 @@ Expected: all PASS. Some tests use `timeout()` to wait for the executor to drain
 - [ ] **Step 17.5: Commit**
 
 ```bash
-git add src/main/java/com/westwardmc/dmcl/core/orchestrator/BridgeOrchestrator.java \
-        src/test/java/com/westwardmc/dmcl/core/orchestrator/BridgeOrchestratorTest.java
+git add src/main/java/com/n1ghtlydev/dmcl/core/orchestrator/BridgeOrchestrator.java \
+        src/test/java/com/n1ghtlydev/dmcl/core/orchestrator/BridgeOrchestratorTest.java
 git commit -m "feat(orchestrator): BridgeOrchestrator wires ports through translation layer"
 ```
 
@@ -2521,9 +2521,9 @@ git commit -m "feat(orchestrator): BridgeOrchestrator wires ports through transl
 ### Task 18: `SqliteLinkRepo` (in-memory test)
 
 **Files:**
-- Create: `src/main/java/com/westwardmc/dmcl/adapter/sqlite/SqliteLinkRepo.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/adapter/sqlite/SqliteLinkRepo.java`
 - Create: `src/main/resources/migrations/V1__init.sql`
-- Create: `src/test/java/com/westwardmc/dmcl/adapter/sqlite/SqliteLinkRepoTest.java`
+- Create: `src/test/java/com/n1ghtlydev/dmcl/adapter/sqlite/SqliteLinkRepoTest.java`
 
 - [ ] **Step 18.1: Write `V1__init.sql`**
 
@@ -2546,9 +2546,9 @@ CREATE INDEX IF NOT EXISTS idx_pending_expires ON pending_link(expires_at);
 - [ ] **Step 18.2: Write tests (in-memory SQLite)**
 
 ```java
-package com.westwardmc.dmcl.adapter.sqlite;
+package com.n1ghtlydev.dmcl.adapter.sqlite;
 
-import com.westwardmc.dmcl.core.domain.PendingLink;
+import com.n1ghtlydev.dmcl.core.domain.PendingLink;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -2609,11 +2609,11 @@ Expected: FAIL.
 - [ ] **Step 18.4: Implement `SqliteLinkRepo`**
 
 ```java
-package com.westwardmc.dmcl.adapter.sqlite;
+package com.n1ghtlydev.dmcl.adapter.sqlite;
 
-import com.westwardmc.dmcl.core.domain.LinkedAccount;
-import com.westwardmc.dmcl.core.domain.PendingLink;
-import com.westwardmc.dmcl.core.port.LinkRepo;
+import com.n1ghtlydev.dmcl.core.domain.LinkedAccount;
+import com.n1ghtlydev.dmcl.core.domain.PendingLink;
+import com.n1ghtlydev.dmcl.core.port.LinkRepo;
 
 import java.sql.*;
 import java.time.Instant;
@@ -2746,9 +2746,9 @@ Expected: PASS.
 - [ ] **Step 18.6: Commit**
 
 ```bash
-git add src/main/java/com/westwardmc/dmcl/adapter/sqlite/SqliteLinkRepo.java \
+git add src/main/java/com/n1ghtlydev/dmcl/adapter/sqlite/SqliteLinkRepo.java \
         src/main/resources/migrations/V1__init.sql \
-        src/test/java/com/westwardmc/dmcl/adapter/sqlite/SqliteLinkRepoTest.java
+        src/test/java/com/n1ghtlydev/dmcl/adapter/sqlite/SqliteLinkRepoTest.java
 git commit -m "feat(adapter/sqlite): SqliteLinkRepo with V1 migration and atomic consumePending"
 ```
 
@@ -2757,14 +2757,14 @@ git commit -m "feat(adapter/sqlite): SqliteLinkRepo with V1 migration and atomic
 ### Task 19: Concurrent consumePending race test
 
 **Files:**
-- Create: `src/test/java/com/westwardmc/dmcl/adapter/sqlite/SqliteLinkRepoRaceTest.java`
+- Create: `src/test/java/com/n1ghtlydev/dmcl/adapter/sqlite/SqliteLinkRepoRaceTest.java`
 
 - [ ] **Step 19.1: Write race test**
 
 ```java
-package com.westwardmc.dmcl.adapter.sqlite;
+package com.n1ghtlydev.dmcl.adapter.sqlite;
 
-import com.westwardmc.dmcl.core.domain.PendingLink;
+import com.n1ghtlydev.dmcl.core.domain.PendingLink;
 import org.junit.jupiter.api.Test;
 import java.nio.file.Files;
 import java.time.Instant;
@@ -2809,7 +2809,7 @@ Expected: PASS. SQLite's per-write transaction with `INSERT OR REPLACE` plus the
 - [ ] **Step 19.3: Commit**
 
 ```bash
-git add src/test/java/com/westwardmc/dmcl/adapter/sqlite/SqliteLinkRepoRaceTest.java
+git add src/test/java/com/n1ghtlydev/dmcl/adapter/sqlite/SqliteLinkRepoRaceTest.java
 git commit -m "test(sqlite): concurrent consumePending race regression"
 ```
 
@@ -2819,13 +2819,13 @@ git commit -m "test(sqlite): concurrent consumePending race regression"
 ### Task 20: `SecretResolver` (env var to `dmcl.env` to `dmcl.secrets.toml`)
 
 **Files:**
-- Create: `src/main/java/com/westwardmc/dmcl/adapter/config/SecretResolver.java`
-- Create: `src/test/java/com/westwardmc/dmcl/adapter/config/SecretResolverTest.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/adapter/config/SecretResolver.java`
+- Create: `src/test/java/com/n1ghtlydev/dmcl/adapter/config/SecretResolverTest.java`
 
 - [ ] **Step 20.1: Write tests**
 
 ```java
-package com.westwardmc.dmcl.adapter.config;
+package com.n1ghtlydev.dmcl.adapter.config;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -2880,7 +2880,7 @@ Expected: FAIL.
 - [ ] **Step 20.3: Implement `SecretResolver`**
 
 ```java
-package com.westwardmc.dmcl.adapter.config;
+package com.n1ghtlydev.dmcl.adapter.config;
 
 import com.electronwill.nightconfig.core.file.FileConfig;
 
@@ -2959,8 +2959,8 @@ Expected: PASS.
 - [ ] **Step 20.5: Commit**
 
 ```bash
-git add src/main/java/com/westwardmc/dmcl/adapter/config/SecretResolver.java \
-        src/test/java/com/westwardmc/dmcl/adapter/config/SecretResolverTest.java
+git add src/main/java/com/n1ghtlydev/dmcl/adapter/config/SecretResolver.java \
+        src/test/java/com/n1ghtlydev/dmcl/adapter/config/SecretResolverTest.java
 git commit -m "feat(config): SecretResolver with env, env-file, secrets-toml fallback chain"
 ```
 
@@ -2969,9 +2969,9 @@ git commit -m "feat(config): SecretResolver with env, env-file, secrets-toml fal
 ### Task 21: `TomlConfigLoader` and `DmclConfig`
 
 **Files:**
-- Create: `src/main/java/com/westwardmc/dmcl/adapter/config/DmclConfig.java`
-- Create: `src/main/java/com/westwardmc/dmcl/adapter/config/TomlConfigLoader.java`
-- Create: `src/test/java/com/westwardmc/dmcl/adapter/config/TomlConfigLoaderTest.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/adapter/config/DmclConfig.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/adapter/config/TomlConfigLoader.java`
+- Create: `src/test/java/com/n1ghtlydev/dmcl/adapter/config/TomlConfigLoaderTest.java`
 - Create: `src/main/resources/dmcl.default.toml`
 
 - [ ] **Step 21.1: Write the default config to ship**
@@ -2981,9 +2981,9 @@ Save `src/main/resources/dmcl.default.toml` with the contents from spec §9.1 ve
 - [ ] **Step 21.2: Write tests**
 
 ```java
-package com.westwardmc.dmcl.adapter.config;
+package com.n1ghtlydev.dmcl.adapter.config;
 
-import com.westwardmc.dmcl.core.domain.Scope;
+import com.n1ghtlydev.dmcl.core.domain.Scope;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import java.io.IOException;
@@ -3046,9 +3046,9 @@ Expected: FAIL.
 - [ ] **Step 21.4: Implement `DmclConfig` and nested records**
 
 ```java
-package com.westwardmc.dmcl.adapter.config;
+package com.n1ghtlydev.dmcl.adapter.config;
 
-import com.westwardmc.dmcl.core.port.ChannelBinding;
+import com.n1ghtlydev.dmcl.core.port.ChannelBinding;
 import java.util.List;
 
 public record DmclConfig(
@@ -3072,12 +3072,12 @@ public record DmclConfig(
 - [ ] **Step 21.5: Implement `TomlConfigLoader`**
 
 ```java
-package com.westwardmc.dmcl.adapter.config;
+package com.n1ghtlydev.dmcl.adapter.config;
 
 import com.electronwill.nightconfig.core.Config;
 import com.electronwill.nightconfig.core.file.FileConfig;
-import com.westwardmc.dmcl.core.domain.Scope;
-import com.westwardmc.dmcl.core.port.ChannelBinding;
+import com.n1ghtlydev.dmcl.core.domain.Scope;
+import com.n1ghtlydev.dmcl.core.port.ChannelBinding;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -3140,9 +3140,9 @@ Expected: PASS.
 - [ ] **Step 21.7: Commit**
 
 ```bash
-git add src/main/java/com/westwardmc/dmcl/adapter/config/{DmclConfig,TomlConfigLoader}.java \
+git add src/main/java/com/n1ghtlydev/dmcl/adapter/config/{DmclConfig,TomlConfigLoader}.java \
         src/main/resources/dmcl.default.toml \
-        src/test/java/com/westwardmc/dmcl/adapter/config/TomlConfigLoaderTest.java
+        src/test/java/com/n1ghtlydev/dmcl/adapter/config/TomlConfigLoaderTest.java
 git commit -m "feat(config): TomlConfigLoader + DmclConfig (TOML via night-config)"
 ```
 
@@ -3151,16 +3151,16 @@ git commit -m "feat(config): TomlConfigLoader + DmclConfig (TOML via night-confi
 ### Task 22: `ConfigValidator` startup checks
 
 **Files:**
-- Create: `src/main/java/com/westwardmc/dmcl/adapter/config/ConfigValidator.java`
-- Create: `src/test/java/com/westwardmc/dmcl/adapter/config/ConfigValidatorTest.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/adapter/config/ConfigValidator.java`
+- Create: `src/test/java/com/n1ghtlydev/dmcl/adapter/config/ConfigValidatorTest.java`
 
 - [ ] **Step 22.1: Write tests**
 
 ```java
-package com.westwardmc.dmcl.adapter.config;
+package com.n1ghtlydev.dmcl.adapter.config;
 
-import com.westwardmc.dmcl.core.domain.Scope;
-import com.westwardmc.dmcl.core.port.ChannelBinding;
+import com.n1ghtlydev.dmcl.core.domain.Scope;
+import com.n1ghtlydev.dmcl.core.port.ChannelBinding;
 import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Optional;
@@ -3210,9 +3210,9 @@ Expected: FAIL.
 - [ ] **Step 22.3: Implement `ConfigValidator`**
 
 ```java
-package com.westwardmc.dmcl.adapter.config;
+package com.n1ghtlydev.dmcl.adapter.config;
 
-import com.westwardmc.dmcl.core.domain.Scope;
+import com.n1ghtlydev.dmcl.core.domain.Scope;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -3244,26 +3244,26 @@ Expected: PASS.
 - [ ] **Step 22.5: Commit**
 
 ```bash
-git add src/main/java/com/westwardmc/dmcl/adapter/config/ConfigValidator.java \
-        src/test/java/com/westwardmc/dmcl/adapter/config/ConfigValidatorTest.java
+git add src/main/java/com/n1ghtlydev/dmcl/adapter/config/ConfigValidator.java \
+        src/test/java/com/n1ghtlydev/dmcl/adapter/config/ConfigValidatorTest.java
 git commit -m "feat(config): ConfigValidator startup sanity checks"
 ```
 
 ---
 ## Phase 8 — JDA adapter
 
-> **Note:** All JDA adapter classes import `net.dv8tion.jda.*` directly. They will be relocated by shadowJar to `com.westwardmc.dmcl.shaded.jda.*` at build time, but source code uses the original package.
+> **Note:** All JDA adapter classes import `net.dv8tion.jda.*` directly. They will be relocated by shadowJar to `com.n1ghtlydev.dmcl.shaded.jda.*` at build time, but source code uses the original package.
 
 ### Task 23: `WebhookCache` (per-channel webhook lookup or create)
 
 **Files:**
-- Create: `src/main/java/com/westwardmc/dmcl/adapter/jda/WebhookCache.java`
-- Create: `src/test/java/com/westwardmc/dmcl/adapter/jda/WebhookCacheTest.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/adapter/jda/WebhookCache.java`
+- Create: `src/test/java/com/n1ghtlydev/dmcl/adapter/jda/WebhookCacheTest.java`
 
 - [ ] **Step 23.1: Write tests (mocked JDA)**
 
 ```java
-package com.westwardmc.dmcl.adapter.jda;
+package com.n1ghtlydev.dmcl.adapter.jda;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Webhook;
@@ -3335,7 +3335,7 @@ Expected: FAIL.
 - [ ] **Step 23.3: Implement `WebhookCache`**
 
 ```java
-package com.westwardmc.dmcl.adapter.jda;
+package com.n1ghtlydev.dmcl.adapter.jda;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -3398,8 +3398,8 @@ Expected: PASS.
 - [ ] **Step 23.5: Commit**
 
 ```bash
-git add src/main/java/com/westwardmc/dmcl/adapter/jda/WebhookCache.java \
-        src/test/java/com/westwardmc/dmcl/adapter/jda/WebhookCacheTest.java
+git add src/main/java/com/n1ghtlydev/dmcl/adapter/jda/WebhookCache.java \
+        src/test/java/com/n1ghtlydev/dmcl/adapter/jda/WebhookCacheTest.java
 git commit -m "feat(adapter/jda): WebhookCache (lookup or create per channel)"
 ```
 
@@ -3408,17 +3408,17 @@ git commit -m "feat(adapter/jda): WebhookCache (lookup or create per channel)"
 ### Task 24: `JdaDiscordAdapter` (sendWebhook, edit, delete, postSystem)
 
 **Files:**
-- Create: `src/main/java/com/westwardmc/dmcl/adapter/jda/JdaDiscordAdapter.java`
-- Create: `src/test/java/com/westwardmc/dmcl/adapter/jda/JdaDiscordAdapterTest.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/adapter/jda/JdaDiscordAdapter.java`
+- Create: `src/test/java/com/n1ghtlydev/dmcl/adapter/jda/JdaDiscordAdapterTest.java`
 
 - [ ] **Step 24.1: Write tests (verify outbound webhook calls and embed posts)**
 
 ```java
-package com.westwardmc.dmcl.adapter.jda;
+package com.n1ghtlydev.dmcl.adapter.jda;
 
-import com.westwardmc.dmcl.core.domain.*;
-import com.westwardmc.dmcl.core.port.*;
-import com.westwardmc.dmcl.core.translate.SystemEventRenderer;
+import com.n1ghtlydev.dmcl.core.domain.*;
+import com.n1ghtlydev.dmcl.core.port.*;
+import com.n1ghtlydev.dmcl.core.translate.SystemEventRenderer;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
@@ -3488,11 +3488,11 @@ Expected: FAIL.
 - [ ] **Step 24.3: Implement `JdaDiscordAdapter`**
 
 ```java
-package com.westwardmc.dmcl.adapter.jda;
+package com.n1ghtlydev.dmcl.adapter.jda;
 
-import com.westwardmc.dmcl.core.domain.*;
-import com.westwardmc.dmcl.core.port.*;
-import com.westwardmc.dmcl.core.translate.SystemEventRenderer;
+import com.n1ghtlydev.dmcl.core.domain.*;
+import com.n1ghtlydev.dmcl.core.port.*;
+import com.n1ghtlydev.dmcl.core.translate.SystemEventRenderer;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -3642,8 +3642,8 @@ Expected: PASS.
 - [ ] **Step 24.5: Commit**
 
 ```bash
-git add src/main/java/com/westwardmc/dmcl/adapter/jda/JdaDiscordAdapter.java \
-        src/test/java/com/westwardmc/dmcl/adapter/jda/JdaDiscordAdapterTest.java
+git add src/main/java/com/n1ghtlydev/dmcl/adapter/jda/JdaDiscordAdapter.java \
+        src/test/java/com/n1ghtlydev/dmcl/adapter/jda/JdaDiscordAdapterTest.java
 git commit -m "feat(adapter/jda): JdaDiscordAdapter for webhook send/edit/delete + postSystem"
 ```
 
@@ -3652,16 +3652,16 @@ git commit -m "feat(adapter/jda): JdaDiscordAdapter for webhook send/edit/delete
 ### Task 25: `JdaMessageListener` (subscribe to MessageReceived/Update/Delete/ReactionAdd, loop guard)
 
 **Files:**
-- Create: `src/main/java/com/westwardmc/dmcl/adapter/jda/JdaMessageListener.java`
-- Create: `src/test/java/com/westwardmc/dmcl/adapter/jda/JdaMessageListenerTest.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/adapter/jda/JdaMessageListener.java`
+- Create: `src/test/java/com/n1ghtlydev/dmcl/adapter/jda/JdaMessageListenerTest.java`
 
 - [ ] **Step 25.1: Write tests**
 
 ```java
-package com.westwardmc.dmcl.adapter.jda;
+package com.n1ghtlydev.dmcl.adapter.jda;
 
-import com.westwardmc.dmcl.core.domain.*;
-import com.westwardmc.dmcl.core.port.*;
+import com.n1ghtlydev.dmcl.core.domain.*;
+import com.n1ghtlydev.dmcl.core.port.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -3747,12 +3747,12 @@ Expected: FAIL.
 - [ ] **Step 25.3: Implement `JdaMessageListener`**
 
 ```java
-package com.westwardmc.dmcl.adapter.jda;
+package com.n1ghtlydev.dmcl.adapter.jda;
 
-import com.westwardmc.dmcl.core.domain.*;
-import com.westwardmc.dmcl.core.port.ChannelBinding;
-import com.westwardmc.dmcl.core.port.ChannelMap;
-import com.westwardmc.dmcl.core.port.ReactionEvent;
+import com.n1ghtlydev.dmcl.core.domain.*;
+import com.n1ghtlydev.dmcl.core.port.ChannelBinding;
+import com.n1ghtlydev.dmcl.core.port.ChannelMap;
+import com.n1ghtlydev.dmcl.core.port.ReactionEvent;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
@@ -3848,8 +3848,8 @@ Expected: PASS.
 - [ ] **Step 25.5: Commit**
 
 ```bash
-git add src/main/java/com/westwardmc/dmcl/adapter/jda/JdaMessageListener.java \
-        src/test/java/com/westwardmc/dmcl/adapter/jda/JdaMessageListenerTest.java
+git add src/main/java/com/n1ghtlydev/dmcl/adapter/jda/JdaMessageListener.java \
+        src/test/java/com/n1ghtlydev/dmcl/adapter/jda/JdaMessageListenerTest.java
 git commit -m "feat(adapter/jda): JdaMessageListener with webhook loop guard"
 ```
 
@@ -3858,8 +3858,8 @@ git commit -m "feat(adapter/jda): JdaMessageListener with webhook loop guard"
 ### Task 26: Edit + delete listeners
 
 **Files:**
-- Modify: `src/main/java/com/westwardmc/dmcl/adapter/jda/JdaMessageListener.java`
-- Create/extend: `src/test/java/com/westwardmc/dmcl/adapter/jda/JdaMessageListenerTest.java`
+- Modify: `src/main/java/com/n1ghtlydev/dmcl/adapter/jda/JdaMessageListener.java`
+- Create/extend: `src/test/java/com/n1ghtlydev/dmcl/adapter/jda/JdaMessageListenerTest.java`
 
 - [ ] **Step 26.1: Add tests for edit/delete**
 
@@ -3922,8 +3922,8 @@ Expected: PASS.
 - [ ] **Step 26.4: Commit**
 
 ```bash
-git add src/main/java/com/westwardmc/dmcl/adapter/jda/JdaMessageListener.java \
-        src/test/java/com/westwardmc/dmcl/adapter/jda/JdaMessageListenerTest.java
+git add src/main/java/com/n1ghtlydev/dmcl/adapter/jda/JdaMessageListener.java \
+        src/test/java/com/n1ghtlydev/dmcl/adapter/jda/JdaMessageListenerTest.java
 git commit -m "feat(adapter/jda): edit + delete listeners with edited flag"
 ```
 
@@ -3932,19 +3932,19 @@ git commit -m "feat(adapter/jda): edit + delete listeners with edited flag"
 ### Task 27: `SlashCommandRouter` (`/link`, `/unlink`, `/players`)
 
 **Files:**
-- Create: `src/main/java/com/westwardmc/dmcl/adapter/jda/SlashCommandRouter.java`
-- Create: `src/test/java/com/westwardmc/dmcl/adapter/jda/SlashCommandRouterTest.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/adapter/jda/SlashCommandRouter.java`
+- Create: `src/test/java/com/n1ghtlydev/dmcl/adapter/jda/SlashCommandRouterTest.java`
 
 - [ ] **Step 27.1: Write tests**
 
 ```java
-package com.westwardmc.dmcl.adapter.jda;
+package com.n1ghtlydev.dmcl.adapter.jda;
 
-import com.westwardmc.dmcl.core.domain.LinkedAccount;
-import com.westwardmc.dmcl.core.orchestrator.BridgeOrchestrator;
-import com.westwardmc.dmcl.core.port.LinkRepo;
-import com.westwardmc.dmcl.core.port.MinecraftPort;
-import com.westwardmc.dmcl.core.port.OnlinePlayer;
+import com.n1ghtlydev.dmcl.core.domain.LinkedAccount;
+import com.n1ghtlydev.dmcl.core.orchestrator.BridgeOrchestrator;
+import com.n1ghtlydev.dmcl.core.port.LinkRepo;
+import com.n1ghtlydev.dmcl.core.port.MinecraftPort;
+import com.n1ghtlydev.dmcl.core.port.OnlinePlayer;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.callbacks.IReplyCallback;
@@ -4011,11 +4011,11 @@ Expected: FAIL.
 - [ ] **Step 27.3: Implement `SlashCommandRouter`**
 
 ```java
-package com.westwardmc.dmcl.adapter.jda;
+package com.n1ghtlydev.dmcl.adapter.jda;
 
-import com.westwardmc.dmcl.core.orchestrator.BridgeOrchestrator;
-import com.westwardmc.dmcl.core.port.LinkRepo;
-import com.westwardmc.dmcl.core.port.MinecraftPort;
+import com.n1ghtlydev.dmcl.core.orchestrator.BridgeOrchestrator;
+import com.n1ghtlydev.dmcl.core.port.LinkRepo;
+import com.n1ghtlydev.dmcl.core.port.MinecraftPort;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -4082,8 +4082,8 @@ Expected: PASS.
 - [ ] **Step 27.5: Commit**
 
 ```bash
-git add src/main/java/com/westwardmc/dmcl/adapter/jda/SlashCommandRouter.java \
-        src/test/java/com/westwardmc/dmcl/adapter/jda/SlashCommandRouterTest.java
+git add src/main/java/com/n1ghtlydev/dmcl/adapter/jda/SlashCommandRouter.java \
+        src/test/java/com/n1ghtlydev/dmcl/adapter/jda/SlashCommandRouterTest.java
 git commit -m "feat(adapter/jda): SlashCommandRouter for /link, /unlink, /players"
 ```
 
@@ -4093,20 +4093,20 @@ git commit -m "feat(adapter/jda): SlashCommandRouter for /link, /unlink, /player
 ### Task 28: `McTextConverter` (translate `RenderedMcText` to MC `Text`)
 
 **Files:**
-- Create: `src/main/java/com/westwardmc/dmcl/adapter/fabric/McTextConverter.java`
-- Create: `src/test/java/com/westwardmc/dmcl/adapter/fabric/McTextConverterTest.java` (smoke test)
+- Create: `src/main/java/com/n1ghtlydev/dmcl/adapter/fabric/McTextConverter.java`
+- Create: `src/test/java/com/n1ghtlydev/dmcl/adapter/fabric/McTextConverterTest.java` (smoke test)
 
 The converter walks `RenderedMcText.Span`s and produces a `MutableText` with the right `Style`, `ClickEvent`, and `HoverEvent`.
 
 - [ ] **Step 28.1: Implement `McTextConverter`**
 
 ```java
-package com.westwardmc.dmcl.adapter.fabric;
+package com.n1ghtlydev.dmcl.adapter.fabric;
 
-import com.westwardmc.dmcl.core.domain.RenderedMcText;
-import com.westwardmc.dmcl.core.domain.RenderedMcText.Color;
-import com.westwardmc.dmcl.core.domain.RenderedMcText.Span;
-import com.westwardmc.dmcl.core.domain.RenderedMcText.Style;
+import com.n1ghtlydev.dmcl.core.domain.RenderedMcText;
+import com.n1ghtlydev.dmcl.core.domain.RenderedMcText.Color;
+import com.n1ghtlydev.dmcl.core.domain.RenderedMcText.Span;
+import com.n1ghtlydev.dmcl.core.domain.RenderedMcText.Style;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.HoverEvent;
 import net.minecraft.text.MutableText;
@@ -4189,9 +4189,9 @@ public final class McTextConverter {
 - [ ] **Step 28.2: Smoke test (asserts no NPE on a simple span)**
 
 ```java
-package com.westwardmc.dmcl.adapter.fabric;
+package com.n1ghtlydev.dmcl.adapter.fabric;
 
-import com.westwardmc.dmcl.core.domain.RenderedMcText;
+import com.n1ghtlydev.dmcl.core.domain.RenderedMcText;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -4212,8 +4212,8 @@ Expected: BUILD SUCCESSFUL.
 - [ ] **Step 28.4: Commit**
 
 ```bash
-git add src/main/java/com/westwardmc/dmcl/adapter/fabric/McTextConverter.java \
-        src/test/java/com/westwardmc/dmcl/adapter/fabric/McTextConverterTest.java
+git add src/main/java/com/n1ghtlydev/dmcl/adapter/fabric/McTextConverter.java \
+        src/test/java/com/n1ghtlydev/dmcl/adapter/fabric/McTextConverterTest.java
 git commit -m "feat(adapter/fabric): McTextConverter for span tree to MC Text"
 ```
 
@@ -4222,15 +4222,15 @@ git commit -m "feat(adapter/fabric): McTextConverter for span tree to MC Text"
 ### Task 29: `FabricMinecraftAdapter` (broadcast, sendTo, online roster, head URL)
 
 **Files:**
-- Create: `src/main/java/com/westwardmc/dmcl/adapter/fabric/FabricMinecraftAdapter.java`
-- Create: `src/main/java/com/westwardmc/dmcl/adapter/fabric/McHeadsAvatarService.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/adapter/fabric/FabricMinecraftAdapter.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/adapter/fabric/McHeadsAvatarService.java`
 
 - [ ] **Step 29.1: Implement `McHeadsAvatarService`**
 
 ```java
-package com.westwardmc.dmcl.adapter.fabric;
+package com.n1ghtlydev.dmcl.adapter.fabric;
 
-import com.westwardmc.dmcl.core.port.AvatarService;
+import com.n1ghtlydev.dmcl.core.port.AvatarService;
 import java.util.UUID;
 
 public final class McHeadsAvatarService implements AvatarService {
@@ -4245,12 +4245,12 @@ public final class McHeadsAvatarService implements AvatarService {
 - [ ] **Step 29.2: Implement `FabricMinecraftAdapter` (handlers wired in later tasks)**
 
 ```java
-package com.westwardmc.dmcl.adapter.fabric;
+package com.n1ghtlydev.dmcl.adapter.fabric;
 
-import com.westwardmc.dmcl.core.domain.BridgeMessage;
-import com.westwardmc.dmcl.core.domain.RenderedMcText;
-import com.westwardmc.dmcl.core.domain.Scope;
-import com.westwardmc.dmcl.core.port.*;
+import com.n1ghtlydev.dmcl.core.domain.BridgeMessage;
+import com.n1ghtlydev.dmcl.core.domain.RenderedMcText;
+import com.n1ghtlydev.dmcl.core.domain.Scope;
+import com.n1ghtlydev.dmcl.core.port.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 
@@ -4315,7 +4315,7 @@ Expected: BUILD SUCCESSFUL.
 - [ ] **Step 29.4: Commit**
 
 ```bash
-git add src/main/java/com/westwardmc/dmcl/adapter/fabric/{FabricMinecraftAdapter,McHeadsAvatarService}.java
+git add src/main/java/com/n1ghtlydev/dmcl/adapter/fabric/{FabricMinecraftAdapter,McHeadsAvatarService}.java
 git commit -m "feat(adapter/fabric): FabricMinecraftAdapter and McHeadsAvatarService"
 ```
 
@@ -4324,17 +4324,17 @@ git commit -m "feat(adapter/fabric): FabricMinecraftAdapter and McHeadsAvatarSer
 ### Task 30: Chat, lifecycle, player event hooks
 
 **Files:**
-- Create: `src/main/java/com/westwardmc/dmcl/adapter/fabric/ChatEventHook.java`
-- Create: `src/main/java/com/westwardmc/dmcl/adapter/fabric/LifecycleHook.java`
-- Create: `src/main/java/com/westwardmc/dmcl/adapter/fabric/PlayerEventHook.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/adapter/fabric/ChatEventHook.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/adapter/fabric/LifecycleHook.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/adapter/fabric/PlayerEventHook.java`
 
 - [ ] **Step 30.1: Implement `ChatEventHook`**
 
 ```java
-package com.westwardmc.dmcl.adapter.fabric;
+package com.n1ghtlydev.dmcl.adapter.fabric;
 
-import com.westwardmc.dmcl.core.domain.*;
-import com.westwardmc.dmcl.core.port.AvatarService;
+import com.n1ghtlydev.dmcl.core.domain.*;
+import com.n1ghtlydev.dmcl.core.port.AvatarService;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 
 import java.time.Instant;
@@ -4370,9 +4370,9 @@ public final class ChatEventHook {
 - [ ] **Step 30.2: Implement `LifecycleHook`**
 
 ```java
-package com.westwardmc.dmcl.adapter.fabric;
+package com.n1ghtlydev.dmcl.adapter.fabric;
 
-import com.westwardmc.dmcl.core.port.LifecycleEvent;
+import com.n1ghtlydev.dmcl.core.port.LifecycleEvent;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 public final class LifecycleHook {
@@ -4388,9 +4388,9 @@ public final class LifecycleHook {
 - [ ] **Step 30.3: Implement `PlayerEventHook`**
 
 ```java
-package com.westwardmc.dmcl.adapter.fabric;
+package com.n1ghtlydev.dmcl.adapter.fabric;
 
-import com.westwardmc.dmcl.core.port.PlayerEvent;
+import com.n1ghtlydev.dmcl.core.port.PlayerEvent;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -4428,7 +4428,7 @@ Expected: BUILD SUCCESSFUL.
 - [ ] **Step 30.5: Commit**
 
 ```bash
-git add src/main/java/com/westwardmc/dmcl/adapter/fabric/{ChatEventHook,LifecycleHook,PlayerEventHook}.java
+git add src/main/java/com/n1ghtlydev/dmcl/adapter/fabric/{ChatEventHook,LifecycleHook,PlayerEventHook}.java
 git commit -m "feat(adapter/fabric): chat/lifecycle/player hooks"
 ```
 
@@ -4437,16 +4437,16 @@ git commit -m "feat(adapter/fabric): chat/lifecycle/player hooks"
 ### Task 31: `McLinkCommand` registers `/link`, `/unlink`, `/dmcl status`
 
 **Files:**
-- Create: `src/main/java/com/westwardmc/dmcl/adapter/fabric/McLinkCommand.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/adapter/fabric/McLinkCommand.java`
 
 - [ ] **Step 31.1: Implement `McLinkCommand`**
 
 ```java
-package com.westwardmc.dmcl.adapter.fabric;
+package com.n1ghtlydev.dmcl.adapter.fabric;
 
 import com.mojang.brigadier.Command;
-import com.westwardmc.dmcl.core.orchestrator.BridgeOrchestrator;
-import com.westwardmc.dmcl.core.port.LinkRepo;
+import com.n1ghtlydev.dmcl.core.orchestrator.BridgeOrchestrator;
+import com.n1ghtlydev.dmcl.core.port.LinkRepo;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -4493,7 +4493,7 @@ Expected: BUILD SUCCESSFUL.
 - [ ] **Step 31.3: Commit**
 
 ```bash
-git add src/main/java/com/westwardmc/dmcl/adapter/fabric/McLinkCommand.java
+git add src/main/java/com/n1ghtlydev/dmcl/adapter/fabric/McLinkCommand.java
 git commit -m "feat(adapter/fabric): /link, /unlink, /dmcl status MC commands"
 ```
 
@@ -4502,7 +4502,7 @@ git commit -m "feat(adapter/fabric): /link, /unlink, /dmcl status MC commands"
 ### Task 32: Advancement hook via Mixin
 
 **Files:**
-- Create: `src/main/java/com/westwardmc/dmcl/mixin/PlayerAdvancementTrackerMixin.java`
+- Create: `src/main/java/com/n1ghtlydev/dmcl/mixin/PlayerAdvancementTrackerMixin.java`
 - Create: `src/main/resources/dmcl.mixins.json`
 - Modify: `src/main/resources/fabric.mod.json` (add mixin entry)
 - Modify: `build.gradle.kts` (mixin annotation processor)
@@ -4520,7 +4520,7 @@ annotationProcessor("net.fabricmc:sponge-mixin:0.13.4+mixin.0.8.5")
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.westwardmc.dmcl.mixin",
+  "package": "com.n1ghtlydev.dmcl.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": ["PlayerAdvancementTrackerMixin"],
   "injectors": { "defaultRequire": 1 }
@@ -4537,10 +4537,10 @@ Add to JSON root:
 - [ ] **Step 32.4: Implement the mixin**
 
 ```java
-package com.westwardmc.dmcl.mixin;
+package com.n1ghtlydev.dmcl.mixin;
 
-import com.westwardmc.dmcl.DmclMod;
-import com.westwardmc.dmcl.core.port.PlayerEvent;
+import com.n1ghtlydev.dmcl.DmclMod;
+import com.n1ghtlydev.dmcl.core.port.PlayerEvent;
 import net.minecraft.advancement.AdvancementEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.PlayerAdvancementTracker;
@@ -4578,7 +4578,7 @@ Expected: BUILD SUCCESSFUL.
 - [ ] **Step 32.6: Commit**
 
 ```bash
-git add src/main/java/com/westwardmc/dmcl/mixin/PlayerAdvancementTrackerMixin.java \
+git add src/main/java/com/n1ghtlydev/dmcl/mixin/PlayerAdvancementTrackerMixin.java \
         src/main/resources/dmcl.mixins.json \
         src/main/resources/fabric.mod.json \
         build.gradle.kts
@@ -4591,20 +4591,20 @@ git commit -m "feat(mixin): advancement event hook via PlayerAdvancementTracker 
 ### Task 33: `DmclMod` wires everything
 
 **Files:**
-- Modify: `src/main/java/com/westwardmc/dmcl/DmclMod.java`
+- Modify: `src/main/java/com/n1ghtlydev/dmcl/DmclMod.java`
 
 - [ ] **Step 33.1: Replace `DmclMod.java` with the full composition root**
 
 ```java
-package com.westwardmc.dmcl;
+package com.n1ghtlydev.dmcl;
 
-import com.westwardmc.dmcl.adapter.config.*;
-import com.westwardmc.dmcl.adapter.fabric.*;
-import com.westwardmc.dmcl.adapter.jda.*;
-import com.westwardmc.dmcl.adapter.sqlite.SqliteLinkRepo;
-import com.westwardmc.dmcl.core.domain.Scope;
-import com.westwardmc.dmcl.core.orchestrator.BridgeOrchestrator;
-import com.westwardmc.dmcl.core.port.*;
+import com.n1ghtlydev.dmcl.adapter.config.*;
+import com.n1ghtlydev.dmcl.adapter.fabric.*;
+import com.n1ghtlydev.dmcl.adapter.jda.*;
+import com.n1ghtlydev.dmcl.adapter.sqlite.SqliteLinkRepo;
+import com.n1ghtlydev.dmcl.core.domain.Scope;
+import com.n1ghtlydev.dmcl.core.orchestrator.BridgeOrchestrator;
+import com.n1ghtlydev.dmcl.core.port.*;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -4728,14 +4728,14 @@ public final class DmclMod implements DedicatedServerModInitializer {
 
 - [ ] **Step 33.2: Implement `InMemoryChannelMap`**
 
-Create `src/main/java/com/westwardmc/dmcl/adapter/config/InMemoryChannelMap.java`:
+Create `src/main/java/com/n1ghtlydev/dmcl/adapter/config/InMemoryChannelMap.java`:
 
 ```java
-package com.westwardmc.dmcl.adapter.config;
+package com.n1ghtlydev.dmcl.adapter.config;
 
-import com.westwardmc.dmcl.core.domain.Scope;
-import com.westwardmc.dmcl.core.port.ChannelBinding;
-import com.westwardmc.dmcl.core.port.ChannelMap;
+import com.n1ghtlydev.dmcl.core.domain.Scope;
+import com.n1ghtlydev.dmcl.core.port.ChannelBinding;
+import com.n1ghtlydev.dmcl.core.port.ChannelMap;
 
 import java.util.HashMap;
 import java.util.List;
@@ -4775,8 +4775,8 @@ If anything fails, jump to the relevant earlier task and add the missing wiring.
 - [ ] **Step 33.5: Commit**
 
 ```bash
-git add src/main/java/com/westwardmc/dmcl/DmclMod.java \
-        src/main/java/com/westwardmc/dmcl/adapter/config/InMemoryChannelMap.java
+git add src/main/java/com/n1ghtlydev/dmcl/DmclMod.java \
+        src/main/java/com/n1ghtlydev/dmcl/adapter/config/InMemoryChannelMap.java
 git commit -m "feat: composition root wiring all adapters and orchestrator"
 ```
 
@@ -4791,7 +4791,7 @@ git commit -m "feat: composition root wiring all adapters and orchestrator"
 **Files:**
 - Modify: `build.gradle.kts`
 - Create: `src/test/resources/fabric.mod.json` (test-only)
-- Create: `src/test/java/com/westwardmc/dmcl/e2e/FakeJda.java`
+- Create: `src/test/java/com/n1ghtlydev/dmcl/e2e/FakeJda.java`
 
 - [ ] **Step 34.1: Add gametest config to `build.gradle.kts`**
 
@@ -4816,10 +4816,10 @@ tasks.register("runGametest") {
 - [ ] **Step 34.2: Implement `FakeJda` test stand-in**
 
 ```java
-package com.westwardmc.dmcl.e2e;
+package com.n1ghtlydev.dmcl.e2e;
 
-import com.westwardmc.dmcl.core.domain.*;
-import com.westwardmc.dmcl.core.port.*;
+import com.n1ghtlydev.dmcl.core.domain.*;
+import com.n1ghtlydev.dmcl.core.port.*;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
@@ -4854,7 +4854,7 @@ Expected: BUILD SUCCESSFUL.
 - [ ] **Step 34.4: Commit**
 
 ```bash
-git add build.gradle.kts src/test/java/com/westwardmc/dmcl/e2e/FakeJda.java
+git add build.gradle.kts src/test/java/com/n1ghtlydev/dmcl/e2e/FakeJda.java
 git commit -m "test(e2e): gametest runtime + FakeJda test double"
 ```
 
@@ -4863,18 +4863,18 @@ git commit -m "test(e2e): gametest runtime + FakeJda test double"
 ### Task 35: E2E test — Discord to MC and MC to Discord round-trip
 
 **Files:**
-- Create: `src/test/java/com/westwardmc/dmcl/e2e/BridgeRoundTripGametest.java`
+- Create: `src/test/java/com/n1ghtlydev/dmcl/e2e/BridgeRoundTripGametest.java`
 
 - [ ] **Step 35.1: Write the gametest**
 
 ```java
-package com.westwardmc.dmcl.e2e;
+package com.n1ghtlydev.dmcl.e2e;
 
-import com.westwardmc.dmcl.core.domain.*;
-import com.westwardmc.dmcl.core.orchestrator.BridgeOrchestrator;
-import com.westwardmc.dmcl.core.port.*;
-import com.westwardmc.dmcl.adapter.config.InMemoryChannelMap;
-import com.westwardmc.dmcl.adapter.fabric.*;
+import com.n1ghtlydev.dmcl.core.domain.*;
+import com.n1ghtlydev.dmcl.core.orchestrator.BridgeOrchestrator;
+import com.n1ghtlydev.dmcl.core.port.*;
+import com.n1ghtlydev.dmcl.adapter.config.InMemoryChannelMap;
+import com.n1ghtlydev.dmcl.adapter.fabric.*;
 import net.fabricmc.fabric.api.gametest.v1.GameTest;
 import net.minecraft.test.TestContext;
 
@@ -4939,11 +4939,11 @@ public final class BridgeRoundTripGametest {
 - [ ] **Step 35.2: Implement `InMemoryLinkRepo` for the gametest**
 
 ```java
-package com.westwardmc.dmcl.e2e;
+package com.n1ghtlydev.dmcl.e2e;
 
-import com.westwardmc.dmcl.core.domain.LinkedAccount;
-import com.westwardmc.dmcl.core.domain.PendingLink;
-import com.westwardmc.dmcl.core.port.LinkRepo;
+import com.n1ghtlydev.dmcl.core.domain.LinkedAccount;
+import com.n1ghtlydev.dmcl.core.domain.PendingLink;
+import com.n1ghtlydev.dmcl.core.port.LinkRepo;
 
 import java.time.Instant;
 import java.util.*;
@@ -4990,7 +4990,7 @@ Expected: both gametests pass; build/junit.xml shows two passes.
 - [ ] **Step 35.4: Commit**
 
 ```bash
-git add src/test/java/com/westwardmc/dmcl/e2e/{BridgeRoundTripGametest,InMemoryLinkRepo}.java
+git add src/test/java/com/n1ghtlydev/dmcl/e2e/{BridgeRoundTripGametest,InMemoryLinkRepo}.java
 git commit -m "test(e2e): gametest round-trip with FakeJda"
 ```
 
@@ -5147,10 +5147,10 @@ tasks.jacocoTestCoverageVerification {
                 minimum = "0.80".toBigDecimal()
             }
             excludes = listOf(
-                "com.westwardmc.dmcl.adapter.fabric.*",
-                "com.westwardmc.dmcl.adapter.jda.JdaDiscordAdapter",
-                "com.westwardmc.dmcl.DmclMod",
-                "com.westwardmc.dmcl.mixin.*"
+                "com.n1ghtlydev.dmcl.adapter.fabric.*",
+                "com.n1ghtlydev.dmcl.adapter.jda.JdaDiscordAdapter",
+                "com.n1ghtlydev.dmcl.DmclMod",
+                "com.n1ghtlydev.dmcl.mixin.*"
             )
         }
     }

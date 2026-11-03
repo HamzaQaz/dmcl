@@ -4,7 +4,7 @@
 **Date:** 2026-05-03
 **Owner:** n1ght
 **Target:** Minecraft 1.21.1 — Fabric Loader, server-side mod
-**Repo path:** `/home/night/projects/halfservers/westwardmc/dmcl`
+**Repo path:** `/home/night/projects/halfservers/n1ghtlydev/dmcl`
 **Deploy target:** auto-copy built jar to `/mnt/c/dev/mc-server/mods/`
 
 ---
@@ -56,7 +56,7 @@ commands; this mod owns the chat bridge and `/link`, `/unlink`, `/players`.
 
 ```
 dmcl/                                 (Fabric mod, single Gradle project)
-└── src/main/java/com/westwardmc/dmcl/
+└── src/main/java/com/n1ghtlydev/dmcl/
     ├── core/                         (pure JVM; no MC/JDA/JDBC imports)
     │   ├── domain/
     │   │   ├── BridgeMessage.java
