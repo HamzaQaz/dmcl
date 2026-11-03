@@ -1,0 +1,85 @@
+plugins {
+    id 'java'
+    id 'net.minecraftforge.gradle'
+    id 'com.gradleup.shadow' version '8.3.5'
+}
+
+def modVersion = file('../gradle.properties').readLines().find { it.startsWith('modVersion') }.split('=')[1].trim()
+
+group = 'com.n1ghtlydev'
+version = modVersion
+base { archivesName = "dmcl-forge-${minecraftVersion}" }
+
+java { toolchain.languageVersion = JavaLanguageVersion.of(21) }
+
+minecraft {
+    mappings channel: 'official', version: minecraftVersion
+}
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://maven.minecraftforge.net' }
+}
+
+configurations { shade; implementation.extendsFrom shade }
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraftVersion}-${forgeVersion}"
+
+    shade('net.dv8tion:JDA:5.2.1') { exclude module: 'opus-java'; exclude group: 'org.slf4j' }
+    shade 'org.xerial:sqlite-jdbc:3.46.1.3'
+    shade 'com.electronwill.night-config:toml:3.8.1'
+
+    testImplementation 'org.slf4j:slf4j-api:2.0.13'
+    testImplementation platform('org.junit:junit-bom:5.11.3')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.mockito:mockito-core:5.14.2'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.14.2'
+    testImplementation 'org.assertj:assertj-core:3.26.3'
+    testImplementation 'com.github.tomakehurst:wiremock-jre8-standalone:3.0.1'
+}
+
+// Shared code lives in the root project: platform-free core plus the vanilla adapter (adapter/mc).
+sourceSets {
+    main {
+        java {
+            srcDir '../src/main/java'
+            srcDir "../src/compat-${compat}/java"
+            exclude '**/adapter/fabric/**', '**/mixin/**', '**/DmclMod.java'
+        }
+        resources {
+            srcDir '../src/main/resources'
+            exclude 'fabric.mod.json', 'dmcl.mixins.json'
+        }
+    }
+    test { java.srcDir '../src/test/java' }
+}
+
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+
+test {
+    useJUnitPlatform()
+    jvmArgs '-Dnet.bytebuddy.experimental=true'
+    testLogging { events 'failed' }
+}
+
+processResources {
+    def props = [version: modVersion, mc_version: minecraftVersion, forge_version: forgeVersion]
+    inputs.properties props
+    filesMatching('META-INF/mods.toml') { expand props }
+}
+
+jar { archiveClassifier = 'slim' }
+shadowJar {
+    archiveClassifier = ''
+    configurations = [project.configurations.shade]
+    relocate 'net.dv8tion.jda', 'com.n1ghtlydev.dmcl.shaded.jda'
+    relocate 'com.electronwill.nightconfig', 'com.n1ghtlydev.dmcl.shaded.nightconfig'
+    relocate 'org.sqlite', 'com.n1ghtlydev.dmcl.shaded.sqlite'
+    mergeServiceFiles()
+    minimize { exclude(dependency('org.xerial:sqlite-jdbc:.*')) }
+}
+// Forge runs on SRG names at runtime, so the shaded jar must be reobfuscated.
+reobf { shadowJar {} }
+build.dependsOn 'reobfShadowJar'
