@@ -9,13 +9,13 @@
   "icon": "assets/dmcl/icon.png",
   "environment": "server",
   "entrypoints": {
-    "server": ["com.westwardmc.dmcl.DmclMod"]
+    "server": ["com.n1ghtlydev.dmcl.DmclMod"]
   },
   "mixins": ["dmcl.mixins.json"],
   "depends": {
     "fabricloader": ">=0.16.0",
     "fabric-api": "*",
     "minecraft": "${mc_version}",
-    "java": ">=21"
+    "java": ">=${java_version}"
   }
 }

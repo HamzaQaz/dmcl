@@ -63,17 +63,18 @@ tasks.processResources {
     inputs.property("version", project.version)
     inputs.property("mod_id", modId)
     inputs.property("mc_version", minecraftVersion)
+    inputs.property("java_version", javaVersion)
     filesMatching("fabric.mod.json") {
-        expand(mapOf("version" to project.version, "mod_id" to modId, "mc_version" to minecraftVersion))
+        expand(mapOf("version" to project.version, "mod_id" to modId, "mc_version" to minecraftVersion, "java_version" to javaVersion))
     }
 }
 
 tasks.shadowJar {
     archiveClassifier.set("dev-shadow")
     configurations = listOf(shade)
-    relocate("net.dv8tion.jda", "com.westwardmc.dmcl.shaded.jda")
-    relocate("com.electronwill.nightconfig", "com.westwardmc.dmcl.shaded.nightconfig")
-    relocate("org.sqlite", "com.westwardmc.dmcl.shaded.sqlite")
+    relocate("net.dv8tion.jda", "com.n1ghtlydev.dmcl.shaded.jda")
+    relocate("com.electronwill.nightconfig", "com.n1ghtlydev.dmcl.shaded.nightconfig")
+    relocate("org.sqlite", "com.n1ghtlydev.dmcl.shaded.sqlite")
     mergeServiceFiles()
     minimize {
         exclude(dependency("org.xerial:sqlite-jdbc:.*"))

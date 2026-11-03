@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.westwardmc.dmcl.mixin",
+  "package": "com.n1ghtlydev.dmcl.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": ["PlayerAdvancementTrackerMixin"],
   "injectors": { "defaultRequire": 1 }

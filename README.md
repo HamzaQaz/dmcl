@@ -110,7 +110,7 @@ Run tests:
 Hexagonal: a pure JVM `core/` package (domain, ports, translation, orchestrator) plus three adapters (JDA, Fabric, SQLite). All translation is unit tested with no MC or JDA imports. Adapter classes wire the IO and stay small.
 
 ```
-src/main/java/com/westwardmc/dmcl/
+src/main/java/com/n1ghtlydev/dmcl/
 ├── core/                         pure JVM, no MC/JDA imports
 │   ├── domain/                   records: BridgeMessage, Author, ...
 │   ├── port/                     interfaces: DiscordPort, MinecraftPort, LinkRepo, ...
