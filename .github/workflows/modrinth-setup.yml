@@ -22,7 +22,7 @@ jobs:
             -d '{"client_side":"unsupported","server_side":"required"}' -w 'env: HTTP %{http_code}\n'
       - name: Featured gallery image
         run: |
-          curl -fsS -X POST "$API/project/$ID/gallery?ext=png&featured=true&title=DMCL&description=Minecraft%20chat%20bridged%20to%20Discord" \
+          curl -sS -X POST "$API/project/$ID/gallery?ext=png&featured=true&title=DMCL&description=Minecraft%20chat%20bridged%20to%20Discord" \
             -H "Authorization: $TOKEN" -H "Content-Type: image/png" --data-binary @branding/banner.png -w 'gallery: HTTP %{http_code}\n'
       - name: Submit for review
         if: inputs.submit
