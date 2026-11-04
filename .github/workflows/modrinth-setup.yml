@@ -1,0 +1,31 @@
+# One-off: set Modrinth project environment + featured gallery image, optionally submit for review.
+name: modrinth-setup
+on:
+  workflow_dispatch:
+    inputs:
+      submit:
+        description: "Also submit the project for review"
+        type: boolean
+        default: false
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    env:
+      TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+      API: https://api.modrinth.com/v2
+      ID: v2ecfuiA
+    steps:
+      - uses: actions/checkout@v4
+      - name: Environment (server-side only)
+        run: |
+          curl -fsS -X PATCH "$API/project/$ID" -H "Authorization: $TOKEN" -H "Content-Type: application/json" \
+            -d '{"client_side":"unsupported","server_side":"required"}' -w 'env: HTTP %{http_code}\n'
+      - name: Featured gallery image
+        run: |
+          curl -fsS -X POST "$API/project/$ID/gallery?ext=png&featured=true&title=DMCL&description=Minecraft%20chat%20bridged%20to%20Discord" \
+            -H "Authorization: $TOKEN" -H "Content-Type: image/png" --data-binary @branding/banner.png -w 'gallery: HTTP %{http_code}\n'
+      - name: Submit for review
+        if: inputs.submit
+        run: |
+          curl -fsS -X PATCH "$API/project/$ID" -H "Authorization: $TOKEN" -H "Content-Type: application/json" \
+            -d '{"status":"processing"}' -w 'submit: HTTP %{http_code}\n'
