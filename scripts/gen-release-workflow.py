@@ -75,7 +75,7 @@ jobs:
           echo "ver=$ver" >> "$GITHUB_OUTPUT"
           if [ "${{{{ matrix.platform }}}}" = paper ]; then
             echo "label=Paper plugin" >> "$GITHUB_OUTPUT"
-            echo "loaders=paper,spigot" >> "$GITHUB_OUTPUT"
+            {{ echo 'loaders<<EOF'; echo paper; echo spigot; echo EOF; }} >> "$GITHUB_OUTPUT"
             # mc-publish wants one game version per line, not a comma list
             {{ echo 'games<<EOF'; echo "{",".join(PAPER_VERSIONS)}" | tr , '{chr(92)}n'; echo EOF; }} >> "$GITHUB_OUTPUT"
           else
