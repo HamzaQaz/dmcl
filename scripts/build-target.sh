@@ -51,7 +51,7 @@ case $platform in
     fv=$(latest https://maven.minecraftforge.net/net/minecraftforge/forge/maven-metadata.xml "^${mc//./\.}-" | sed "s/^$mc-//")
     [ -n "$fv" ] || { echo "no stable Forge for $mc" >&2; exit 1; }
     if [ "$mc" = 1.21.1 ]; then
-      ./gradlew -p forge build -PminecraftVersion="$mc" -PforgeVersion="$fv" -Pcompat=$compat --console=plain
+      (cd forge && ./gradlew build -PminecraftVersion="$mc" -PforgeVersion="$fv" -Pcompat=$compat --console=plain) # needs its own Gradle 8.8 wrapper
       echo "JAR=forge/build/libs/dmcl-forge-$mc-$ver.jar"
     else
       eb=(); case $mc in 1.21.3|1.21.4|1.21.5) ;; *) eb=(-Peb7=1) ;; esac # Forge 1.21.6+ uses EventBus 7
