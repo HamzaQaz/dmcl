@@ -29,6 +29,10 @@ on:
   push:
     tags: ["v*"]
   workflow_dispatch:
+    inputs:
+      only:
+        description: "Publish only this target, e.g. forge:1.21.1 (empty = all)"
+        default: ""
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -39,15 +43,24 @@ jobs:
         include:
 {chr(10).join(rows)}
     steps:
+      - name: Gate
+        id: gate
+        run: |
+          only="${{{{ inputs.only }}}}"
+          if [ -n "$only" ] && [ "$only" != "${{{{ matrix.platform }}}}:${{{{ matrix.mc }}}}" ]; then echo "skip=true" >> "$GITHUB_OUTPUT"; fi
       - uses: actions/checkout@v4
+        if: steps.gate.outputs.skip != 'true'
       - uses: actions/setup-java@v4
+        if: steps.gate.outputs.skip != 'true'
         with:
           distribution: temurin
           java-version: |
             21
             25
       - uses: gradle/actions/setup-gradle@v4
+        if: steps.gate.outputs.skip != 'true'
       - name: Build
+        if: steps.gate.outputs.skip != 'true'
         id: build
         shell: bash
         run: |
@@ -55,6 +68,7 @@ jobs:
           out=$(scripts/build-target.sh ${{{{ matrix.platform }}}} ${{{{ matrix.mc }}}} | tee /dev/stderr | tail -1)
           echo "$out" >> "$GITHUB_OUTPUT"
       - name: Version info
+        if: steps.gate.outputs.skip != 'true'
         id: info
         run: |
           ver=$(grep '^modVersion' gradle.properties | cut -d= -f2 | tr -d ' \\r')
@@ -69,8 +83,10 @@ jobs:
             echo "games=${{{{ matrix.mc }}}}" >> "$GITHUB_OUTPUT"
           fi
       - name: Release notes
+        if: steps.gate.outputs.skip != 'true'
         run: scripts/release-notes.sh "${{{{ matrix.platform }}}}" "${{{{ matrix.mc }}}}" "${{{{ steps.info.outputs.ver }}}}" > release-notes.md
       - uses: Kir-Antipov/mc-publish@v3.3
+        if: steps.gate.outputs.skip != 'true'
         with:
           modrinth-id: v2ecfuiA
           modrinth-token: ${{{{ secrets.MODRINTH_TOKEN }}}}
