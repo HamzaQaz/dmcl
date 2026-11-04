@@ -49,7 +49,9 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - name: Build
         id: build
+        shell: bash
         run: |
+          set -o pipefail
           out=$(scripts/build-target.sh ${{{{ matrix.platform }}}} ${{{{ matrix.mc }}}} | tee /dev/stderr | tail -1)
           echo "$out" >> "$GITHUB_OUTPUT"
       - name: Version info
